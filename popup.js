@@ -13,9 +13,9 @@ function displayMessages(backgroundPage) {
   var html = '<ul>';
   html += backgroundPage.services.map(function (service) {
     return '<li class="service">'
-            + service.name
+            + service.host
             + '<span class="host">'
-            + service.host + ':' + service.port
+            + service.address + ':' + service.port
             + '</span>'
            '</li>';
   }).join('');
