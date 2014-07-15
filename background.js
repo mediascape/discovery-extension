@@ -1,4 +1,5 @@
 var services = [],
+    radios   = [],
     helperApp;
 
 if(!helperApp) {
@@ -8,6 +9,10 @@ if(!helperApp) {
 chrome.runtime.onMessageExternal.addListener(function (message) {
   console.log("message received from app", message);
   services = message;
+
+  radios = services.map(function(s) {
+    return window.Radiodan.create('http://' + s.host + ':' + s.port);
+  });
 });
 
 function connectToHelperApp() {

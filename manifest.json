@@ -10,7 +10,10 @@
   "background": {
     "scripts": ["radiodan.min.js", "background.js"]
   },
+  "web_accessible_resources": [
+  ],
   "permissions": [
-    "management"
+    "management",
+    "tabs"
   ]
 }
