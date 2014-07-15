@@ -13,6 +13,7 @@ var radiodanURL = window.location.search;
 radiodanURL = radiodanURL.match(/service=(.*)$/i)[1];
 
 window.radiodan = window.Radiodan.create('http://'+radiodanURL);
+
 /*
   Connect to a Radiodan Player.
   '1' is the ID of the player to
@@ -23,7 +24,8 @@ var player = window.radiodan.player.create(1);
 /*
   Connect to default audio device.
 */
-var audio  = window.radiodan.audio.create('default');
+//var audio  = window.radiodan.audio.create('default');
+var audio  = player;
 
 
 /*
