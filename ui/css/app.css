@@ -1,0 +1,158 @@
+body {
+  margin: 2em;
+}
+
+.no-button {
+  border: none;
+  background: none;
+}
+
+.controls {
+  background-color: #ddd;
+}
+
+.control {
+  font-size: 2em;
+}
+
+.no-button {
+  color: rgb(0, 0, 255);
+  -webkit-transition: color 0.1s ease-in-out;
+     -moz-transition: color 0.1s ease-in-out;
+       -o-transition: color 0.1s ease-in-out;
+          transition: color 0.1s ease-in-out;
+}
+
+.no-button:hover {
+  color: rgb(0, 100, 255);
+}
+
+.panel {
+  margin: 1em 2em;
+  padding: 1em;
+}
+
+.panel h2 {
+  margin-top: 0;
+}
+
+/*
+  Form styles
+*/
+.button-xsmall {
+  font-size: 70%;
+}
+
+input[type='search'],
+input[type='text'] {
+  border: none;
+  border-bottom: 1px solid rgb(0, 0, 255);
+  background: none;
+  width: 75%;
+  height: 1.5em;
+}
+
+
+/*
+  Play-pause button
+*/
+.play-pause {
+  position: relative;
+}
+
+.play-pause .fa-pause {
+  margin-left: -50%;
+}
+
+.play-pause[data-state='paused'] .fa-pause {
+  opacity: 0;
+}
+
+.play-pause[data-state='playing'] .fa-play {
+  opacity: 0;
+}
+
+/*
+  Current playlist panel
+*/
+.current-playlist {
+  position: relative;
+}
+
+.current-playlist .indicator,
+.current-playlist .indicator {
+  display: none;
+}
+
+.current-playlist .is-current .indicator,
+.current-playlist .is-next .indicator {
+  display: block;
+}
+
+.current-playlist .is-current .indicator {
+  color: rgba(0, 255, 0, 1);
+}
+
+.current-playlist .is-next .indicator {
+  color: rgba(0, 255, 0, 0.5);
+}
+
+table {
+  width: 100%;
+  margin-top: 1em;
+  border: none;
+}
+
+.clear-playlist {
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-weight: bold;
+}
+
+.transition-opacity {
+  -webkit-transition: opacity 0.1s ease-in-out;
+     -moz-transition: opacity 0.1s ease-in-out;
+       -o-transition: opacity 0.1s ease-in-out;
+          transition: opacity 0.1s ease-in-out;
+}
+
+/*
+  Live streams
+*/
+
+.streams {
+  padding: 0;
+}
+
+.streams li {
+  list-style: none;
+  display: inline-block;
+  vertical-align: top;
+  padding: 0.5em 0.5em 1em 0.5em;
+  width: 97px;
+  font-size: 0.8em;
+  color: #333;
+}
+
+.streams li:hover {
+  background-color: #eee;
+}
+
+.streams a {
+  text-decoration: none;
+  color: #000;
+}
+
+.streams i {
+  color: rgb(0, 0, 255);
+}
+
+.streams span {
+  display: block;
+}
+
+.streams img {
+  height: 50px;
+  padding-bottom: 0.0.75em;
+}

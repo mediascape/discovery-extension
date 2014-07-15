@@ -9,13 +9,19 @@ function display(msg) {
 
 chrome.runtime.getBackgroundPage(displayMessages);
 
+function urlFor(service) {
+  return service.address + ':' + service.port;
+}
+
 function displayMessages(backgroundPage) {
-  var html = '<ul>';
-  html += backgroundPage.services.map(function (service) {
+  var html = '<ul>',
+      services = backgroundPage.services;
+
+  html += services.map(function (service) {
     return '<li class="service">'
             + service.host
             + '<span class="host">'
-            + service.address + ':' + service.port
+            + urlFor(service)
             + '</span>'
            '</li>';
   }).join('');
@@ -23,11 +29,11 @@ function displayMessages(backgroundPage) {
   display(html);
 
   var items = Array.prototype.slice.call(document.getElementsByTagName('li')),
-      uiPage = chrome.extension.getURL("ui.html");
+      uiPage = chrome.extension.getURL('ui/index.html');
 
-  items.forEach(function(li) {
+  items.forEach(function(li, index) {
     li.addEventListener('click', function() {
-      chrome.tabs.create({url: uiPage});
+      chrome.tabs.create({url: uiPage + '?service=' + urlFor(services[index])});
     });
   });
 }

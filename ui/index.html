@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="/ui/css/lib/pure.css">
+  <link rel="stylesheet" href="/ui/lib/font-awesome/css/font-awesome.css">
+  <link rel="stylesheet" href="/ui/css/app.css">
+
+  <script src="/ui/js/radiodan.min.js"></script>
+  <title>Radiodan Client Example</title>
+</head>
+<body>
+  <h1>Radiodan Client Examples</h1>
+  <div class="pure-g-r">
+    <div class="pure-u-1-2">
+      <div class="controls panel pure-g-r">
+        <div class="group playback pure-u-1-2">
+          <button id="previous" class="no-button control">
+            <i class="fa fa-backward"></i>
+          </button>
+          <button id="play-pause" data-state="paused" class="play-pause no-button control">
+            <i class="fa fa-play transition-opacity"></i>
+            <i class="fa fa-pause transition-opacity"></i>
+          </button>
+          <button id="next" class="no-button control">
+            <i class="fa fa-forward"></i>
+          </button>
+        </div>
+        <label class="group volume control pure-u-1-2">
+          <i class="fa fa-volume-up"></i>
+          <input id="volume" class="volume" type="range" value="0" min="0" max="100" />
+          <span class="current-volume"></span>
+        </label>
+      </div>
+
+      <div id="current-playlist" class="current-playlist">
+        <h2>Current playlist</h2>
+        <button id="clear-playlist" class="clear-playlist pure-button button-xsmall">Clear</button>
+        <table class="pure-table pure-table-horizontal pure-table-striped">
+          <thead>
+            <tr>
+              <th></th>
+              <th>#</th>
+              <th>Title</th>
+              <th>Artist</th>
+              <th>Length</th>
+              <th>Remove</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="5">Playlist is empty</td></tr>
+          </tbody>
+        </table>
+      </div>
+  </div>
+
+  <div class="pure-u-1-2">
+    <div class="panel collapse add-to-playlist">
+      <h2><i class="fa fa-plus"></i> Add stream/file path</h2>
+      <div>
+        <input type="text" placeholder="Stream, music file" />
+        <button class="no-button"><i class="fa fa-plus-circle"></i> Add</button>
+      </div>
+    </div>
+    <div class="panel collapse search">
+      <h2><i class="fa fa-search"></i> Search library</h2>
+      <div>
+        <input type="search" placeholder="File name, track, artists" />
+        <button class="no-button"><i class="fa fa-search"></i> Search</button>
+        <table class="pure-table pure-table-horizontal pure-table-striped">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Artist</th>
+              <th>Length</th>
+              <th>Add</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="4">No search results</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="panel collapse">
+      <h2><i class="fa fa-cloud"></i> Live streams</h2>
+      <div>
+        <ul class="streams"></ul>
+      </div>
+    </div>
+
+  </div>
+
+    <!--
+    <h2>Playlists</h2>
+    <div>
+      <label class="playlist">Item to add to playlist:
+        <input type="text" placeholder="Stream, music file" />
+        <button class="pure-button">Add</button>
+      </label>
+    </div>
+    <h2>Search</h2>
+    <div class="search">
+      <label>Search:
+        <input type="search" placeholder="file name, track, artists" />
+        <button class="pure-button">Search</button>
+      </label>
+      <span class="spinner">
+        <i class="fa fa-spinner fa-spin"></i>
+      </span>
+      <span class="msg"></span>
+      <ul class="results"></ul>
+    </div>
+  </div>
+
+  <div class="pure-u-1-2">
+    <ul class="streams">
+    </ul>
+  </div>
+    -->
+
+  <script src="/ui/js/lib/xhr.js"></script>
+  <script src="/ui/js/playback-controls.js"></script>
+  <script src="/ui/js/search.js"></script>
+  <script src="/ui/js/app.js"></script>
+</body>
+</html>
