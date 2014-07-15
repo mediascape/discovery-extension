@@ -1,31 +1,31 @@
 function play() {
-  player.play();
+  window.player.play();
 }
 
 function pause() {
-  player.pause({ value: true });
+  window.player.pause({ value: true });
 }
 
 function nextTrack() {
-  return player.next();
+  return window.player.next();
 }
 
 function previousTrack() {
-  return player.previous();
+  return window.player.previous();
 }
 
 function setVolume(vol) {
-  return audio.volume({ value: vol });
+  return window.audio.volume({ value: vol });
 }
 
 function clearPlaylist() {
-  return player.clear();
+  return window.player.clear();
 }
 
 function addToPlaylist(path) {
-  return player.add({ playlist: [ path ]});
+  return window.player.add({ playlist: [ path ]});
 }
 
 function removeFromPlaylist(position) {
-  return player.remove({ position: position });
+  return window.player.remove({ position: position });
 }

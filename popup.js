@@ -33,7 +33,7 @@ function displayMessages(backgroundPage) {
 
   items.forEach(function(li, index) {
     li.addEventListener('click', function() {
-      chrome.tabs.create({url: uiPage + '?service=' + urlFor(services[index])});
+      chrome.tabs.create({url: uiPage + '?service=' + index});
     });
   });
 }
