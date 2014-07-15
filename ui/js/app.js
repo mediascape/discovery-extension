@@ -14,10 +14,11 @@ chrome.runtime.getBackgroundPage(buildUI);
 function buildUI(backgroundPage) {
   var serviceId = window.location.search.match(/service=([^&]*)/i)[1],
       services  = backgroundPage.services,
-      radiodan  = services[serviceId];
+      radiodan  = services[serviceId],
+      players   = radiodan.txt.players;
 
   setupRadiodan(radiodan);
-  createPlayer(1);
+  createPlayer(players[0].id);
 }
 
 function setupRadiodan(service) {
