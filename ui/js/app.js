@@ -10,7 +10,7 @@
 'use strict';
 
 var radiodanURL = window.location.search;
-radiodanURL = radiodanURL.match(/service=(.*)$/i)[1];
+radiodanURL = radiodanURL.match(/service=([^&]*)/i)[1];
 
 window.radiodan = window.Radiodan.create('http://'+radiodanURL);
 
