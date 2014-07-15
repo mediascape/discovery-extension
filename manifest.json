@@ -8,7 +8,7 @@
     "default_popup": "popup.html"
   },
   "background": {
-    "scripts": ["radiodan.min.js", "background.js"]
+    "scripts": ["background.js"]
   },
   "web_accessible_resources": [
     "ui/*"
