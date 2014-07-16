@@ -59,9 +59,7 @@ function buildUI(backgroundPage) {
   view.on('stream', function (evt) {
     evt.original.preventDefault();
     var url = evt.node.href;
-    clearPlaylist()
-      .then(function () { addToPlaylist(url) })
-      .then(play);
+    addToPlaylist(url).then(play);
   });
 
   view.on('next', function (evt) { nextTrack(); });
