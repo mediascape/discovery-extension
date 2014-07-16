@@ -74,6 +74,14 @@ function buildUI(backgroundPage) {
     removeFromPlaylist(pos);
   });
 
+  view.on('add-direct', function (evt) {
+    var file = evt.context.file;
+    if (file) {
+      addToPlaylist(file);
+      this.set('file', '');
+    }
+  });
+
   view.on('add', function (evt) {
     var file = evt.context.file;
     addToPlaylist(file);
@@ -143,7 +151,7 @@ function createAndAttachPlayer(playerSpec) {
   window.ui.audio  = window.radiodan.audio.create('default');
   //window.ui.audio  = window.ui.player;
 
-// Get status to do an initial update of
+  // Get status to do an initial update of
   // the user interface
   player.status()
     .then(function (status) {
@@ -210,22 +218,4 @@ function createAndAttachPlayer(playerSpec) {
     console.log('Volume has changed to ', content.value);
     view.set('volume', content.value);
   });
-
-  return playerSpec;
-
-  /*
-     Add an item to the playlist from 'Add to playlist'
-     */
-  window.ui.addToPlaylistInput  = document.querySelector('.add-to-playlist input');
-  window.ui.addToPlaylistButton = document.querySelector('.add-to-playlist button');
-
-  window.ui.addToPlaylistButton.addEventListener('click', handleAddToPlaylist);
-
-  function handleAddToPlaylist() {
-    // Handle adding to playlist
-    if (window.ui.addToPlaylistInput.value === '') { return; }
-
-    // Add to the player's playlist
-    addToPlaylist(window.ui.addToPlaylistInput.value);
-  }
 }

@@ -86,8 +86,8 @@
     <div class="panel collapse add-to-playlist">
       <h2><i class="fa fa-plus"></i> Add stream/file path</h2>
       <div>
-        <input type="text" placeholder="Stream, music file" />
-        <button class="no-button"><i class="fa fa-plus-circle"></i> Add</button>
+        <input type="text" placeholder="Stream, music file" value="{{ file }}" />
+        <button class="no-button" on-click="add-direct"><i class="fa fa-plus-circle"></i> Add</button>
       </div>
     </div>
     <div class="panel collapse search">
