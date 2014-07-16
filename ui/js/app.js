@@ -11,6 +11,8 @@
 
 chrome.runtime.getBackgroundPage(buildUI);
 
+var view;
+
 function buildUI(backgroundPage) {
 
   var serviceId = window.location.search.match(/service=([^&]*)/i)[1],
@@ -19,63 +21,71 @@ function buildUI(backgroundPage) {
       players   = radiodan.txt.players,
       currentPlayer = players[0];
 
-  var view = new Ractive({
+  setupRadiodan(radiodan);
+  players.forEach(function (player) {
+    createAndAttachPlayer(player);
+  });
+  
+  view = new Ractive({
     el: '#view',
     template: '#view-template',
     data: {
       currentPlayer: currentPlayer,
-      players: players
-    }
+      players: players,
+      streams: []
+    },
+    debug: true
   });
 
-  // window.ui = {};
-
-  // createPlayerSelection(players, currentPlayer.id);
-  // setupRadiodan(radiodan);
-  // createPlayer(currentPlayer.id);
-}
-
-function createPlayerSelection(players, selectedId) {
-  var playerSelect = document.querySelector('#player-select');
-
-  players.forEach(function(player) {
-    var opt = document.createElement('option');
-    opt.value = player.id;
-    opt.innerHTML = player.name;
-
-    if(selectedId === player.id) {
-      opt.selected = true;
-    }
-
-    playerSelect.appendChild(opt);
+  view.observe('currentPlayer', function (newValue) {
+    console.log('Swap global player', newValue);
+    window.ui.player = newValue.player;
   });
 
-  playerSelect.addEventListener('change', function(e) {
-    var selected  = e.srcElement.options.selectedIndex,
-        newOption = e.srcElement.options[selected];
-
-    window.ui = {};
-
-    createPlayer(newOption.value);
+  view.on('stream', function (evt) {
+    evt.original.preventDefault();
+    var url = evt.node.href;
+    clearPlaylist()
+      .then(function () { addToPlaylist(url) })
+      .then(play);
   });
+
+  /*
+   Live streams list
+  */
+  var streamsEl = document.querySelector('.streams');
+  window.getJSON(
+      'http://bbcradioservices.pixelblend.co.uk/services.json',
+      buildServicesList
+      );
+
+  function buildServicesList(json) {
+    view.set('streams', json.services);
+  }
 }
 
 function setupRadiodan(service) {
   window.radiodan = window.Radiodan.create('http://'+service.address+':'+service.port);
 }
 
-function createPlayer(id) {
+function createAndAttachPlayer(playerSpec) {
+
+  window.ui = window.ui || {};
+
+  playerSpec.player = window.radiodan.player.create(playerSpec.id);
+
   /*
     Connect to a Radiodan Player.
     '1' is the ID of the player to
     connect to.
   */
-  window.ui.player = window.radiodan.player.create(id);
+  window.ui.player = playerSpec.player;
 
   //var audio  = window.radiodan.audio.create('default');
   window.ui.audio  = window.radiodan.audio.create('default');
   //window.ui.audio  = window.ui.player;
 
+  return playerSpec;
 
   /*
      Playback controls
@@ -356,66 +366,6 @@ function createPlayer(id) {
 
     if (file) {
       addToPlaylist(file);
-    }
-  }
-
-  /*
-     Live streams list
-     */
-  var streamsEl = document.querySelector('.streams');
-  window.getJSON(
-      'http://bbcradioservices.pixelblend.co.uk/services.json',
-      buildServicesList
-      );
-
-  function buildServicesList(json) {
-    streamsEl.innerHTML = json.services
-      .map(createServiceListItem)
-      .join('');
-  }
-
-  function createServiceListItem(service) {
-    if (service.audioStreams.length > 0) {
-      return '<li>'
-        +   '<a href="' + service.audioStreams[0].url + '">'
-        +     '<img src="' + service.logos.active + '" />'
-        +     '<span>'
-        +       '<i class="fa fa-plus-circle"></i> '
-        +       (service.nowAndNext[0].brand || '')
-        +     '</span>'
-        +   '</a>'
-        + '</li>';
-    } else {
-      return '';
-    }
-  }
-
-  // Add stream to the playlist on click
-  streamsEl.addEventListener('click', handleAddStream);
-
-  function handleAddStream(evt) {
-    var targetEl = evt.target,
-        url;
-
-    // Prevent any links being followed
-    evt.preventDefault();
-
-    // This will run for any click on the streams list element
-    // If the parent of the element clicked is the anchor, then
-    // set the parent as the target
-    if (targetEl.parentNode.nodeName === 'A') {
-      targetEl = targetEl.parentNode;
-    }
-
-    // If the target is the anchor then add to the playlist
-    if (targetEl.nodeName === 'A') {
-      url = targetEl.getAttribute('href');
-    }
-
-    console.log(targetEl, targetEl.parentNode, url);
-
-    if (url) {
-      addToPlaylist(url).then(play);
     }
   }
 

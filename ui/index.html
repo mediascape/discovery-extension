@@ -96,7 +96,19 @@
     <div class="panel collapse">
       <h2><i class="fa fa-cloud"></i> Live streams</h2>
       <div>
-        <ul class="streams"></ul>
+        <ul class="streams">
+        {{#streams}}
+          <li>
+           <a on-click="stream" href={{ audioStreams[0].url }}>
+             <img src="{{ logos.active }}" />
+             <span>
+               <i class="fa fa-plus-circle"></i> 
+               {{ nowAndNext[0].brand || '' }}
+             </span>
+           </a>
+          </li>
+        {{/streams}}
+        </ul>
       </div>
     </div>
   </div>
