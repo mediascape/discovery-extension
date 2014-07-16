@@ -46,7 +46,7 @@
 
       <div id="current-playlist" class="current-playlist">
         <h2>Current playlist</h2>
-        <button id="clear-playlist" class="clear-playlist pure-button button-xsmall">Clear</button>
+        <button id="clear-playlist" on-click="clear" class="clear-playlist pure-button button-xsmall">Clear</button>
         <table class="pure-table pure-table-horizontal pure-table-striped">
           <thead>
             <tr>
@@ -59,7 +59,24 @@
             </tr>
           </thead>
           <tbody>
+            {{#currentPlayer.playlist}}
+            <tr>
+              <td><i class="indicator fa fa-circle"></i></td>
+              <td>{{ Pos }}</td>
+              <td>{{ Name || Title || '' }}</td>
+              <td>{{ Artist || '' }}</td>
+              <td>00:00</td>
+              <td>
+                <button class="remove no-button" 
+                        on-click="remove:Pos" 
+                        data-pos="{{Pos}}"><i class="fa fa-times-circle"></i></button>
+              </td>
+            </tr>
+            {{/currentPlayer}}
+
+            {{^currentPlayer}}
             <tr><td colspan="6">Playlist is empty</td></tr>
+            {{/currentPlayer}}
           </tbody>
         </table>
       </div>

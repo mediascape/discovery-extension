@@ -53,6 +53,16 @@ function buildUI(backgroundPage) {
   view.on('next', function (evt) { nextTrack(); });
   view.on('previous', function (evt) { previousTrack(); });
 
+  view.on('clear', function (evt) {
+    clearPlaylist();
+  });
+
+  view.on('remove', function (evt) {
+    var pos = evt.context.Pos;
+    removeFromPlaylist(pos);
+  });
+
+
   /*
    Live streams list
   */
@@ -76,6 +86,13 @@ function createAndAttachPlayer(playerSpec) {
   window.ui = window.ui || {};
 
   playerSpec.player = window.radiodan.player.create(playerSpec.id);
+  playerSpec.playlist = [];
+
+  playerSpec.player.on('playlist', function (newPlaylist) {
+    console.log('playlist', newPlaylist)
+    playerSpec.playlist = newPlaylist;
+    view.updateModel();
+  });
 
   /*
     Connect to a Radiodan Player.
@@ -166,73 +183,6 @@ function createAndAttachPlayer(playerSpec) {
 
   function setVolumeSlider(volume) {
     window.ui.volumeEl.value = volume;
-  }
-
-  /*
-     When the playlist has changed, rebuild the
-     playlist table
-     */
-  window.ui.currentPlaylistEl = document.querySelector('#current-playlist table tbody');
-  window.ui.player.on('playlist', rebuildPlaylistTable);
-
-  function rebuildPlaylistTable(content) {
-    var html = '';
-    if (content.length === 0) {
-      html = '<tr><td colspan="6">Playlist is empty</td></tr>';
-    } else {
-      html = content.map(createPlaylistRowForItem).join('');
-    }
-
-    window.ui.currentPlaylistEl.innerHTML = html;
-  }
-
-  /*
-     For a playlist item, returns a single
-     table row of HTML markup
-     */
-  function createPlaylistRowForItem(item) {
-    return    '<tr>'
-      +   '<td><i class="indicator fa fa-circle"></i></td>'
-      +   '<td>' + item.Pos + '</td>'
-      +   '<td>' + (item.Name || item.Title || '') + '</td>'
-      +   '<td>' + (item.Artist || '') + '</td>'
-      +   '<td>' + '00:00' + '</td>'
-      +   '<td><button class="remove no-button" data-pos="' + item.Pos + '"><i class="fa fa-times-circle"></i></button></td>'
-      + '</tr>';
-  }
-
-  /*
-     Clear the entire playlist when the button is pressed
-     */
-  window.ui.playlistClearButtonEl = document.querySelector('.clear-playlist');
-  window.ui.playlistClearButtonEl.addEventListener('click', function () {
-    clearPlaylist();
-  });
-
-  /*
-     Remove an item from playlist when button's pressed
-     */
-  window.ui.currentPlaylistEl.addEventListener('click', handleRemovePlaylist);
-
-  function handleRemovePlaylist(evt) {
-    var targetEl = evt.target,
-        position;
-
-    // This will run for any click on the currentPlaylist element
-    // If the element clicked is the icon, set the target as the
-    // parent button
-    if (targetEl.nodeName === 'I') {
-      targetEl = targetEl.parentNode;
-    }
-
-    // If the target is the button then remove from the playlist
-    if (targetEl.nodeName === 'BUTTON') {
-      position = targetEl.dataset.pos;
-    }
-
-    if (position) {
-      removeFromPlaylist(position);
-    }
   }
 
   /*
