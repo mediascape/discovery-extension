@@ -29,7 +29,7 @@
           <button id="previous" on-click="previous" class="no-button control">
             <i class="fa fa-backward"></i>
           </button>
-          <button id="play-pause" data-state="paused" class="play-pause no-button control">
+          <button id="play-pause" on-click="play-pause" data-state="{{ currentPlayer.state == 'play' ? 'playing' : 'paused' }}" class="play-pause no-button control">
             <i class="fa fa-play transition-opacity"></i>
             <i class="fa fa-pause transition-opacity"></i>
           </button>

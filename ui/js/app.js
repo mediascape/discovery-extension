@@ -76,6 +76,16 @@ function buildUI(backgroundPage) {
     addToPlaylist(file);
   });
 
+  view.on('play-pause', function handlePlayPause(evt) {
+    // Get the current button state
+    var currentState = evt.context.currentPlayer.state;
+    if (currentState === 'play') {
+      pause();
+    } else {
+      play();
+    }
+  });
+
   /*
    Live streams list
   */
@@ -122,62 +132,46 @@ function createAndAttachPlayer(playerSpec) {
     view.set('search.results', evt.results);
   });
 
-  return playerSpec;
+// Get status to do an initial update of
+  // the user interface
+  window.ui.player.status()
+    .then(function (status) {
+      if (status.playlist) {
+        view.set('currentPlayer.playlist', status.playlist);
+      }
+      if (status.player.state) {
+        view.set('currentPlayer.state', status.player.state);
+      }
 
-  /*
-     Playback controls
-     */
-  window.ui.playPauseEl = document.querySelector('#play-pause');
+      // if (status.player.song) {
+      //   setCurrentSong(status.player.song);
+      // }
 
-  // Listen for the play-pause button to be pressed
-  window.ui.playPauseEl.addEventListener('click', handlePlayPause);
-
-  /*
-     Trigger either playing or paused when the button
-     is clicked
-     */
-  function handlePlayPause() {
-    // Get the current button state
-    var currentState = window.ui.playPauseEl.dataset.state;
-    if (currentState === 'paused') {
-      setPlayState();
-      play();
-    } else {
-      setPauseState();
-      pause();
-    }
-  }
-
-  // Set the button to the playing state
-  // and actually start playing
-  function setPlayState() {
-    window.ui.playPauseEl.dataset.state = 'playing';
-  }
-
-  // Set the button to the paused state
-  // and tell the player to pause
-  function setPauseState() {
-    window.ui.playPauseEl.dataset.state = 'paused';
-  }
+      // if (status.player.nextsong) {
+      //   setNextSong(status.player.nextsong);
+      // }
+    });
 
   /*
      Listen for general player state changes
      */
   window.ui.player.on('player', function (info) {
-    if (info.state === 'play') {
-      setPlayState();
-    } else {
-      setPauseState();
+    console.log('info', info);
+
+    if (info.state) {
+      view.set('currentPlayer.state', info.state);
     }
 
-    if (info.song) {
-      setCurrentSong(info.song);
-    }
+    // if (info.song) {
+    //   setCurrentSong(info.song);
+    // }
 
-    if (info.nextsong) {
-      setNextSong(info.nextsong);
-    }
+    // if (info.nextsong) {
+    //   setNextSong(info.nextsong);
+    // }
   });
+
+  return playerSpec;
 
   /*
      Change the volume when the slide is moved
@@ -250,28 +244,6 @@ function createAndAttachPlayer(playerSpec) {
       row.classList.remove('is-next');
     }
   }
-
-  // Get status to do an initial update of
-  // the user interface
-  window.ui.player.status()
-    .then(function (status) {
-      if (status.playlist) {
-        rebuildPlaylistTable(status.playlist);
-      }
-      if (status.player.state && status.player.state === 'play') {
-        setPlayState();
-      } else {
-        setPauseState();
-      }
-
-      if (status.player.song) {
-        setCurrentSong(status.player.song);
-      }
-
-      if (status.player.nextsong) {
-        setNextSong(status.player.nextsong);
-      }
-    });
 
   window.ui.audio.status()
     .then(function (status) {
