@@ -12,17 +12,27 @@
 chrome.runtime.getBackgroundPage(buildUI);
 
 function buildUI(backgroundPage) {
+
   var serviceId = window.location.search.match(/service=([^&]*)/i)[1],
       services  = backgroundPage.services,
       radiodan  = services[serviceId],
       players   = radiodan.txt.players,
       currentPlayer = players[0];
 
-  window.ui = {};
+  var view = new Ractive({
+    el: '#view',
+    template: '#view-template',
+    data: {
+      currentPlayer: currentPlayer,
+      players: players
+    }
+  });
 
-  createPlayerSelection(players, currentPlayer.id);
-  setupRadiodan(radiodan);
-  createPlayer(currentPlayer.id);
+  // window.ui = {};
+
+  // createPlayerSelection(players, currentPlayer.id);
+  // setupRadiodan(radiodan);
+  // createPlayer(currentPlayer.id);
 }
 
 function createPlayerSelection(players, selectedId) {

@@ -9,11 +9,20 @@
   <title>Radiodan Client Example</title>
 </head>
 <body>
-  <h1>Radiodan Client Examples</h1>
+
+  <div id="view"></div>
+
+  <!-- Main view template -->
+  <script id="view-template" type='text/ractive'>
+  <h1>Radiodan Client Examples ({{ currentPlayer.name }})</h1>
   <div class="pure-g-r">
     <div class="pure-u-1-2">
       <div class="pure">
-        <select id="player-select"></select>
+        <select id="player-select" value="{{ currentPlayer }}">
+          {{#players}}
+          <option value="{{.}}">{{name}}</option>
+          {{/players}}
+        </select>
       </div>
       <div class="controls panel pure-g-r">
         <div class="group playback pure-u-1-2">
@@ -90,37 +99,10 @@
         <ul class="streams"></ul>
       </div>
     </div>
-
   </div>
+  </script>
 
-    <!--
-    <h2>Playlists</h2>
-    <div>
-      <label class="playlist">Item to add to playlist:
-        <input type="text" placeholder="Stream, music file" />
-        <button class="pure-button">Add</button>
-      </label>
-    </div>
-    <h2>Search</h2>
-    <div class="search">
-      <label>Search:
-        <input type="search" placeholder="file name, track, artists" />
-        <button class="pure-button">Search</button>
-      </label>
-      <span class="spinner">
-        <i class="fa fa-spinner fa-spin"></i>
-      </span>
-      <span class="msg"></span>
-      <ul class="results"></ul>
-    </div>
-  </div>
-
-  <div class="pure-u-1-2">
-    <ul class="streams">
-    </ul>
-  </div>
-    -->
-
+  <script src="/ui/js/lib/ractive.js"></script>
   <script src="/ui/js/lib/xhr.js"></script>
   <script src="/ui/js/playback-controls.js"></script>
   <script src="/ui/js/search.js"></script>
