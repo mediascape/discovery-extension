@@ -36,7 +36,8 @@ function buildUI(backgroundPage) {
       search: {
         term: '',
         results: []
-      }
+      },
+      volume: null
     },
     debug: true
   });
@@ -74,6 +75,16 @@ function buildUI(backgroundPage) {
   view.on('add', function (evt) {
     var file = evt.context.file;
     addToPlaylist(file);
+  });
+
+  view.observe('volume', function (newValue, oldValue) {
+    console.log('ui volume changed', newValue, oldValue);
+    var firstSetting = newValue === null || oldValue === null;
+    // Only send updates if change is from UI
+    if (!firstSetting) {
+      console.log('send state update', newValue);
+      setVolume(newValue);
+    }
   });
 
   view.on('play-pause', function handlePlayPause(evt) {
@@ -136,6 +147,8 @@ function createAndAttachPlayer(playerSpec) {
   // the user interface
   window.ui.player.status()
     .then(function (status) {
+      console.log('player.status', status);
+
       if (status.playlist) {
         view.set('currentPlayer.playlist', status.playlist);
       }
@@ -171,16 +184,16 @@ function createAndAttachPlayer(playerSpec) {
     // }
   });
 
-  return playerSpec;
-
-  /*
-     Change the volume when the slide is moved
-     */
-  window.ui.volumeEl = document.querySelector('#volume');
-  window.ui.volumeEl.addEventListener('change', function () {
-    console.log('Volume', window.ui.volumeEl.value);
-    setVolume(window.ui.volumeEl.value);
-  });
+  window.ui.audio.status()
+    .then(function (status) {
+      var currentVolume = view.get('volume');
+      console.log('audio.status', currentVolume, status);
+      if (status.volume) {
+        if (currentVolume !== status.volume) {
+          view.set('volume', status.volume);
+        }
+      }
+    });
 
   /*
      If the player volume is changed elsewhere in the
@@ -188,13 +201,11 @@ function createAndAttachPlayer(playerSpec) {
      to match the new volume
      */
   window.ui.audio.on('volume', function(content) {
-    console.log('Volume has changed to ', content.volume);
-    setVolumeSlider(content.volume);
+    console.log('Volume has changed to ', content.value);
+    view.set('volume', content.value);
   });
 
-  function setVolumeSlider(volume) {
-    window.ui.volumeEl.value = volume;
-  }
+  return playerSpec;
 
   /*
      Add an item to the playlist from 'Add to playlist'
@@ -244,11 +255,4 @@ function createAndAttachPlayer(playerSpec) {
       row.classList.remove('is-next');
     }
   }
-
-  window.ui.audio.status()
-    .then(function (status) {
-      if (status.volume) {
-        setVolumeSlider(status.volume);
-      }
-    });
 }
