@@ -26,14 +26,14 @@
       </div>
       <div class="controls panel pure-g-r">
         <div class="group playback pure-u-1-2">
-          <button id="previous" class="no-button control">
+          <button id="previous" on-click="previous" class="no-button control">
             <i class="fa fa-backward"></i>
           </button>
           <button id="play-pause" data-state="paused" class="play-pause no-button control">
             <i class="fa fa-play transition-opacity"></i>
             <i class="fa fa-pause transition-opacity"></i>
           </button>
-          <button id="next" class="no-button control">
+          <button id="next" on-click="next" class="no-button control">
             <i class="fa fa-forward"></i>
           </button>
         </div>

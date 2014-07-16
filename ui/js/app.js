@@ -50,6 +50,9 @@ function buildUI(backgroundPage) {
       .then(play);
   });
 
+  view.on('next', function (evt) { nextTrack(); });
+  view.on('previous', function (evt) { previousTrack(); });
+
   /*
    Live streams list
   */
@@ -140,23 +143,6 @@ function createAndAttachPlayer(playerSpec) {
     if (info.nextsong) {
       setNextSong(info.nextsong);
     }
-  });
-
-  /*
-     Next
-     */
-  window.ui.nextEl = document.querySelector('#next');
-
-  // Listen for the play-pause button to be pressed
-  window.ui.nextEl.addEventListener('click', function () {
-    nextTrack();
-  });
-
-  window.ui.previousEl = document.querySelector('#previous');
-
-  // Listen for the play-pause button to be pressed
-  window.ui.previousEl.addEventListener('click', function () {
-    previousTrack();
   });
 
   /*
