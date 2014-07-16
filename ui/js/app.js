@@ -15,10 +15,39 @@ function buildUI(backgroundPage) {
   var serviceId = window.location.search.match(/service=([^&]*)/i)[1],
       services  = backgroundPage.services,
       radiodan  = services[serviceId],
-      players   = radiodan.txt.players;
+      players   = radiodan.txt.players,
+      currentPlayer = players[0];
 
+  window.ui = {};
+
+  createPlayerSelection(players, currentPlayer.id);
   setupRadiodan(radiodan);
-  createPlayer(players[0].id);
+  createPlayer(currentPlayer.id);
+}
+
+function createPlayerSelection(players, selectedId) {
+  var playerSelect = document.querySelector('#player-select');
+
+  players.forEach(function(player) {
+    var opt = document.createElement('option');
+    opt.value = player.id;
+    opt.innerHTML = player.name;
+
+    if(selectedId === player.id) {
+      opt.selected = true;
+    }
+
+    playerSelect.appendChild(opt);
+  });
+
+  playerSelect.addEventListener('change', function(e) {
+    var selected  = e.srcElement.options.selectedIndex,
+        newOption = e.srcElement.options[selected];
+
+    window.ui = {};
+
+    createPlayer(newOption.value);
+  });
 }
 
 function setupRadiodan(service) {
@@ -31,19 +60,20 @@ function createPlayer(id) {
     '1' is the ID of the player to
     connect to.
   */
-  window.player = window.radiodan.player.create(id);
+  window.ui.player = window.radiodan.player.create(id);
 
   //var audio  = window.radiodan.audio.create('default');
-  window.audio  = window.player;
+  window.ui.audio  = window.radiodan.audio.create('default');
+  //window.ui.audio  = window.ui.player;
 
 
   /*
      Playback controls
      */
-  var playPauseEl = document.querySelector('#play-pause');
+  window.ui.playPauseEl = document.querySelector('#play-pause');
 
   // Listen for the play-pause button to be pressed
-  playPauseEl.addEventListener('click', handlePlayPause);
+  window.ui.playPauseEl.addEventListener('click', handlePlayPause);
 
   /*
      Trigger either playing or paused when the button
@@ -51,7 +81,7 @@ function createPlayer(id) {
      */
   function handlePlayPause() {
     // Get the current button state
-    var currentState = playPauseEl.dataset.state;
+    var currentState = window.ui.playPauseEl.dataset.state;
     if (currentState === 'paused') {
       setPlayState();
       play();
@@ -64,19 +94,19 @@ function createPlayer(id) {
   // Set the button to the playing state
   // and actually start playing
   function setPlayState() {
-    playPauseEl.dataset.state = 'playing';
+    window.ui.playPauseEl.dataset.state = 'playing';
   }
 
   // Set the button to the paused state
   // and tell the player to pause
   function setPauseState() {
-    playPauseEl.dataset.state = 'paused';
+    window.ui.playPauseEl.dataset.state = 'paused';
   }
 
   /*
      Listen for general player state changes
      */
-  window.player.on('player', function (info) {
+  window.ui.player.on('player', function (info) {
     if (info.state === 'play') {
       setPlayState();
     } else {
@@ -95,27 +125,27 @@ function createPlayer(id) {
   /*
      Next
      */
-  var nextEl = document.querySelector('#next');
+  window.ui.nextEl = document.querySelector('#next');
 
   // Listen for the play-pause button to be pressed
-  nextEl.addEventListener('click', function () {
+  window.ui.nextEl.addEventListener('click', function () {
     nextTrack();
   });
 
-  var previousEl = document.querySelector('#previous');
+  window.ui.previousEl = document.querySelector('#previous');
 
   // Listen for the play-pause button to be pressed
-  previousEl.addEventListener('click', function () {
+  window.ui.previousEl.addEventListener('click', function () {
     previousTrack();
   });
 
   /*
      Change the volume when the slide is moved
      */
-  var volumeEl = document.querySelector('#volume');
-  volumeEl.addEventListener('change', function () {
-    console.log('Volume', volumeEl.value);
-    setVolume(volumeEl.value);
+  window.ui.volumeEl = document.querySelector('#volume');
+  window.ui.volumeEl.addEventListener('change', function () {
+    console.log('Volume', window.ui.volumeEl.value);
+    setVolume(window.ui.volumeEl.value);
   });
 
   /*
@@ -123,21 +153,21 @@ function createPlayer(id) {
      system, change the position of the slider
      to match the new volume
      */
-  window.audio.on('volume', function(content) {
+  window.ui.audio.on('volume', function(content) {
     console.log('Volume has changed to ', content.volume);
     setVolumeSlider(content.volume);
   });
 
   function setVolumeSlider(volume) {
-    volumeEl.value = volume;
+    window.ui.volumeEl.value = volume;
   }
 
   /*
      When the playlist has changed, rebuild the
      playlist table
      */
-  var currentPlaylistEl = document.querySelector('#current-playlist table tbody');
-  window.player.on('playlist', rebuildPlaylistTable);
+  window.ui.currentPlaylistEl = document.querySelector('#current-playlist table tbody');
+  window.ui.player.on('playlist', rebuildPlaylistTable);
 
   function rebuildPlaylistTable(content) {
     var html = '';
@@ -147,7 +177,7 @@ function createPlayer(id) {
       html = content.map(createPlaylistRowForItem).join('');
     }
 
-    currentPlaylistEl.innerHTML = html;
+    window.ui.currentPlaylistEl.innerHTML = html;
   }
 
   /*
@@ -168,15 +198,15 @@ function createPlayer(id) {
   /*
      Clear the entire playlist when the button is pressed
      */
-  var playlistClearButtonEl = document.querySelector('.clear-playlist');
-  playlistClearButtonEl.addEventListener('click', function () {
+  window.ui.playlistClearButtonEl = document.querySelector('.clear-playlist');
+  window.ui.playlistClearButtonEl.addEventListener('click', function () {
     clearPlaylist();
   });
 
   /*
      Remove an item from playlist when button's pressed
      */
-  currentPlaylistEl.addEventListener('click', handleRemovePlaylist);
+  window.ui.currentPlaylistEl.addEventListener('click', handleRemovePlaylist);
 
   function handleRemovePlaylist(evt) {
     var targetEl = evt.target,
@@ -202,17 +232,17 @@ function createPlayer(id) {
   /*
      Add an item to the playlist from 'Add to playlist'
      */
-  var addToPlaylistInput  = document.querySelector('.add-to-playlist input');
-  var addToPlaylistButton = document.querySelector('.add-to-playlist button');
+  window.ui.addToPlaylistInput  = document.querySelector('.add-to-playlist input');
+  window.ui.addToPlaylistButton = document.querySelector('.add-to-playlist button');
 
-  addToPlaylistButton.addEventListener('click', handleAddToPlaylist);
+  window.ui.addToPlaylistButton.addEventListener('click', handleAddToPlaylist);
 
   function handleAddToPlaylist() {
     // Handle adding to playlist
-    if (addToPlaylistInput.value === '') { return; }
+    if (window.ui.addToPlaylistInput.value === '') { return; }
 
     // Add to the player's playlist
-    addToPlaylist(addToPlaylistInput.value);
+    addToPlaylist(window.ui.addToPlaylistInput.value);
   }
 
   /*
@@ -220,14 +250,14 @@ function createPlayer(id) {
      */
   function setCurrentSong(position) {
     clearCurrentSong();
-    var row = currentPlaylistEl.children[position];
+    var row = window.ui.currentPlaylistEl.children[position];
     if (row) {
       row.classList.add('is-current');
     }
   }
 
   function clearCurrentSong() {
-    var row = currentPlaylistEl.querySelector('.is-current');
+    var row = window.ui.currentPlaylistEl.querySelector('.is-current');
     if (row) {
       row.classList.remove('is-current');
     }
@@ -235,14 +265,14 @@ function createPlayer(id) {
 
   function setNextSong(position) {
     clearNextSong();
-    var row = currentPlaylistEl.children[position];
+    var row = window.ui.currentPlaylistEl.children[position];
     if (row) {
       row.classList.add('is-next');
     }
   }
 
   function clearNextSong() {
-    var row = currentPlaylistEl.querySelector('.is-next');
+    var row = window.ui.currentPlaylistEl.querySelector('.is-next');
     if (row) {
       row.classList.remove('is-next');
     }
@@ -251,22 +281,22 @@ function createPlayer(id) {
   /*
      Perform a search
      */
-  var searchPanelEl   = document.querySelector('.search');
-  var searchInputEl   = searchPanelEl.querySelector('input');
-  var searchButtonEl  = searchPanelEl.querySelector('button');
-  var searchResultsEl = searchPanelEl.querySelector('tbody');
+  window.ui.searchPanelEl   = document.querySelector('.search');
+  window.ui.searchInputEl   = window.ui.searchPanelEl.querySelector('input');
+  window.ui.searchButtonEl  = window.ui.searchPanelEl.querySelector('button');
+  window.ui.searchResultsEl = window.ui.searchPanelEl.querySelector('tbody');
 
   // Perform a search when the text box changes or
   // a button is pressed
-  searchInputEl.addEventListener('input', performSearch);
-  searchButtonEl.addEventListener('click', performSearch);
+  window.ui.searchInputEl.addEventListener('input', performSearch);
+  window.ui.searchButtonEl.addEventListener('click', performSearch);
 
   // Listen for the custom 'searchresults' event fired
   // on the document when results are result
   document.addEventListener('searchresults', populateSearchResults);
 
   function performSearch() {
-    var term = searchInputEl.value;
+    var term = window.ui.searchInputEl.value;
     search(term);
   }
 
@@ -280,7 +310,7 @@ function createPlayer(id) {
       html = evt.results.map(createSearchRowForItem).join('');
     }
 
-    searchResultsEl.innerHTML = html;
+    window.ui.searchResultsEl.innerHTML = html;
   }
 
   function createSearchRowForItem(item) {
@@ -296,7 +326,7 @@ function createPlayer(id) {
      Adding a search result
      */
   // Listen for the 'add' button to be pressed on a search result
-  searchResultsEl.addEventListener('click', handleSearchAddClick);
+  window.ui.searchResultsEl.addEventListener('click', handleSearchAddClick);
 
   function handleSearchAddClick(evt) {
     var targetEl = evt.target,
@@ -381,7 +411,7 @@ function createPlayer(id) {
 
   // Get status to do an initial update of
   // the user interface
-  window.player.status()
+  window.ui.player.status()
     .then(function (status) {
       if (status.playlist) {
         rebuildPlaylistTable(status.playlist);
@@ -401,7 +431,7 @@ function createPlayer(id) {
       }
     });
 
-  window.audio.status()
+  window.ui.audio.status()
     .then(function (status) {
       if (status.volume) {
         setVolumeSlider(status.volume);

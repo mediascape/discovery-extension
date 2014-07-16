@@ -28,7 +28,7 @@ function displayMessages(backgroundPage) {
   html += '</ul>';
   display(html);
 
-  var items = Array.prototype.slice.call(document.getElementsByTagName('li')),
+  var items = Array.prototype.slice.call(document.getElementsByClassName('service')),
       uiPage = chrome.extension.getURL('ui/index.html');
 
   items.forEach(function(li, index) {

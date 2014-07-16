@@ -4,7 +4,7 @@ function search(term) {
     // matching teh term in artist name, titles etc.
     // Then, trigger a custom event containing the
     // results
-    window.player.search({ any: term })
+    window.ui.player.search({ any: term })
           .then(triggerResults);
 
     // Trigger a custom 'searchstarted' event
