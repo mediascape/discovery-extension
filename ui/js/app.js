@@ -32,14 +32,23 @@ function buildUI(backgroundPage) {
     data: {
       currentPlayer: currentPlayer,
       players: players,
-      streams: []
+      streams: [],
+      search: {
+        term: '',
+        results: []
+      }
     },
     debug: true
   });
 
-  view.observe('currentPlayer', function (newValue) {
-    console.log('Swap global player', newValue);
+  view.observe('currentPlayer', function (newValue, oldValue, obj) {
+    console.log('Swap global player', newValue, oldValue, obj);
     window.ui.player = newValue.player;
+    view.set('search', { term: '', results: [] });
+  });
+
+  view.observe('search.term', function (newValue) {
+    search(newValue);
   });
 
   view.on('stream', function (evt) {
@@ -62,6 +71,10 @@ function buildUI(backgroundPage) {
     removeFromPlaylist(pos);
   });
 
+  view.on('add', function (evt) {
+    var file = evt.context.file;
+    addToPlaylist(file);
+  });
 
   /*
    Live streams list
@@ -104,6 +117,10 @@ function createAndAttachPlayer(playerSpec) {
   //var audio  = window.radiodan.audio.create('default');
   window.ui.audio  = window.radiodan.audio.create('default');
   //window.ui.audio  = window.ui.player;
+
+  document.addEventListener('searchresults', function (evt) {
+    view.set('search.results', evt.results);
+  });
 
   return playerSpec;
 
@@ -231,77 +248,6 @@ function createAndAttachPlayer(playerSpec) {
     var row = window.ui.currentPlaylistEl.querySelector('.is-next');
     if (row) {
       row.classList.remove('is-next');
-    }
-  }
-
-  /*
-     Perform a search
-     */
-  window.ui.searchPanelEl   = document.querySelector('.search');
-  window.ui.searchInputEl   = window.ui.searchPanelEl.querySelector('input');
-  window.ui.searchButtonEl  = window.ui.searchPanelEl.querySelector('button');
-  window.ui.searchResultsEl = window.ui.searchPanelEl.querySelector('tbody');
-
-  // Perform a search when the text box changes or
-  // a button is pressed
-  window.ui.searchInputEl.addEventListener('input', performSearch);
-  window.ui.searchButtonEl.addEventListener('click', performSearch);
-
-  // Listen for the custom 'searchresults' event fired
-  // on the document when results are result
-  document.addEventListener('searchresults', populateSearchResults);
-
-  function performSearch() {
-    var term = window.ui.searchInputEl.value;
-    search(term);
-  }
-
-  function populateSearchResults(evt) {
-    var results = evt.results,
-        html = '';
-
-    if (results.length === 0) {
-      html = '<tr><td colspan="5">No search results</td></tr>';
-    } else {
-      html = evt.results.map(createSearchRowForItem).join('');
-    }
-
-    window.ui.searchResultsEl.innerHTML = html;
-  }
-
-  function createSearchRowForItem(item) {
-    return    '<tr>'
-      +   '<td>' + (item.Name || item.Title || '') + '</td>'
-      +   '<td>' + (item.Artist || '') + '</td>'
-      +   '<td>' + (item.Time || '') + '</td>'
-      +   '<td><button class="add no-button" data-file="' + item.file + '"><i class="fa fa-plus-circle"></i></button></td>'
-      + '</tr>';
-  }
-
-  /*
-     Adding a search result
-     */
-  // Listen for the 'add' button to be pressed on a search result
-  window.ui.searchResultsEl.addEventListener('click', handleSearchAddClick);
-
-  function handleSearchAddClick(evt) {
-    var targetEl = evt.target,
-        file;
-
-    // This will run for any click on the searchResults element
-    // If the element clicked is the icon, set the target as the
-    // parent button
-    if (targetEl.nodeName === 'I') {
-      targetEl = targetEl.parentNode;
-    }
-
-    // If the target is the button then add to the playlist
-    if (targetEl.nodeName === 'BUTTON') {
-      file = targetEl.dataset.file;
-    }
-
-    if (file) {
-      addToPlaylist(file);
     }
   }
 

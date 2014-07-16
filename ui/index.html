@@ -93,8 +93,9 @@
     <div class="panel collapse search">
       <h2><i class="fa fa-search"></i> Search library</h2>
       <div>
-        <input type="search" placeholder="File name, track, artists" />
-        <button class="no-button"><i class="fa fa-search"></i> Search</button>
+        {{#search}}
+        <input type="search" placeholder="File name, track, artists" value="{{ term }}"/>
+        <button class="no-button" on-click="search"><i class="fa fa-search"></i> Search</button>
         <table class="pure-table pure-table-horizontal pure-table-striped">
           <thead>
             <tr>
@@ -105,9 +106,22 @@
             </tr>
           </thead>
           <tbody>
+            {{^results}}
             <tr><td colspan="4">No search results</td></tr>
+            {{/results}}
+            {{#results}}
+            <tr>
+              <td>{{ Name || Title || '' }}</td>
+              <td>{{ Artist || '' }}</td>
+              <td>{{ Time || '' }}</td>
+              <td>
+              <button class="add no-button" on-click="add" data-file="{{ file }}"><i class="fa fa-plus-circle"></i>
+              </button></td>
+            </tr>
+            {{/results}}
           </tbody>
         </table>
+        {{/search}}
       </div>
     </div>
     <div class="panel collapse">
