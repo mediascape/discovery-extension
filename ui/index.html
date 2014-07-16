@@ -60,7 +60,7 @@
           </thead>
           <tbody>
             {{#currentPlayer.playlist}}
-            <tr>
+            <tr class="{{ Pos === ../../current ? 'is-current' : '' }} {{ Pos === ../../next ? 'is-next' : '' }}">
               <td><i class="indicator fa fa-circle"></i></td>
               <td>{{ Pos }}</td>
               <td>{{ Name || Title || '' }}</td>
