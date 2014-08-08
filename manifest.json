@@ -21,7 +21,7 @@
         "shared/styles.css"
       ],
       "js": [
-        "ui/js/radiodan.min.js",
+        "remote/js/radiodan.min.js",
         "shared/lib/lodash.min.js",
         "shared/device-list.js",
         "content-script/api.js",
@@ -30,7 +30,7 @@
     }
   ],
   "web_accessible_resources": [
-    "ui/*"
+    "remote/*"
   ],
   "permissions": [
     "management",

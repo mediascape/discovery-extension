@@ -38,7 +38,7 @@ function displayMessages(backgroundPage) {
   display(html);
 
   var items = Array.prototype.slice.call(document.getElementsByClassName('service')),
-      uiPage = chrome.extension.getURL('ui/index.html');
+      uiPage = chrome.extension.getURL('remote/index.html');
 
   items.forEach(function(li, index) {
     li.addEventListener('click', function() {
