@@ -4,16 +4,31 @@
   "description": "Display available Radiodans and control them",
   "version": "0.0.1",
   "icons": {
-    "128": "icon128.png"
+    "128": "shared/icon128.png"
   },
   "browser_action": {
-    "default_icon": "icon.png",
-    "default_popup": "popup.html"
+    "default_icon": "shared/icon.png",
+    "default_popup": "popup/popup.html"
   },
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "background": {
-    "scripts": ["background.js"]
+    "scripts": ["shared/device-list.js", "background/background.js"]
   },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "css": [
+        "shared/styles.css"
+      ],
+      "js": [
+        "ui/js/radiodan.min.js",
+        "shared/lib/lodash.min.js",
+        "shared/device-list.js",
+        "content-script/api.js",
+        "content-script/content.js"
+      ]
+    }
+  ],
   "web_accessible_resources": [
     "ui/*"
   ],

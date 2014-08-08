@@ -1,3 +1,12 @@
+/*
+  Display a list of found devices on the local 
+  network.
+  
+  When a device is selected, open the remote
+  control tab specifying the correct device to 
+  connect to.
+*/
+
 document.addEventListener('DOMContentLoaded', function () {
   display('Searching...');
 });
@@ -14,7 +23,7 @@ function urlFor(service) {
 }
 
 function displayMessages(backgroundPage) {
-  var html = '<ul>',
+  var html = '<ul class="mediascape-device-list">',
       services = backgroundPage.services;
 
   html += services.map(function (service) {
