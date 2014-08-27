@@ -12,7 +12,8 @@
   },
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "background": {
-    "scripts": ["shared/device-list.js", "background/background.js"]
+    "scripts": ["shared/device-list.js", "background/background.js"],
+    "persistent": false
   },
   "content_scripts": [
     {
