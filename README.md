@@ -1,7 +1,7 @@
-Radiodan Discovery extensions
+MediaScape Discovery extensions
 ===
 
-This Chrome Extension listens for Radiodan services on the local network (found by the Discovery Helper Chrome App) and allows them to be controlled.
+This Chrome Extension listens for MediaScape radio services on the local network (found by the Discovery Helper Chrome App) and allows them to be controlled.
 
 Remote control
 ---

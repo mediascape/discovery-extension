@@ -25,7 +25,7 @@ chrome.runtime.onMessageExternal.addListener(function (message) {
 function connectToHelperApp() {
   chrome.management.getAll(function(results) {
     var matched = results.filter(function(r) {
-      return r.shortName == "radiodan-disco";
+      return r.shortName == "mediscape-discovery-helper";
     });
 
     if(matched.length > 0) {

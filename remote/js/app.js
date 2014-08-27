@@ -17,11 +17,11 @@ function buildUI(backgroundPage) {
 
   var serviceId = window.location.search.match(/service=([^&]*)/i)[1],
       services  = backgroundPage.services,
-      radiodan  = services[serviceId],
-      players   = radiodan.txt.players,
+      radio     = services[serviceId],
+      players   = radio.txt.players,
       currentPlayer = players[0];
 
-  setupRadiodan(radiodan);
+  setupRadio(radio);
   players.forEach(function (player) {
     createAndAttachPlayer(player);
   });
@@ -125,15 +125,15 @@ function buildUI(backgroundPage) {
   }
 }
 
-function setupRadiodan(service) {
-  window.radiodan = window.Radiodan.create('http://'+service.address+':'+service.port);
+function setupRadio(service) {
+  window.radio = window.Radiodan.create('http://'+service.address+':'+service.port);
 }
 
 function createAndAttachPlayer(playerSpec) {
 
   window.ui = window.ui || {};
 
-  var player = window.radiodan.player.create(playerSpec.id)
+  var player = window.radio.player.create(playerSpec.id)
 
   playerSpec.player = player;
   playerSpec.playlist = [];
@@ -147,9 +147,7 @@ function createAndAttachPlayer(playerSpec) {
     view.update();
   });
 
-  //var audio  = window.radiodan.audio.create('default');
-  window.ui.audio  = window.radiodan.audio.create('default');
-  //window.ui.audio  = window.ui.player;
+  window.ui.audio  = window.radio.audio.create('default');
 
   // Get status to do an initial update of
   // the user interface

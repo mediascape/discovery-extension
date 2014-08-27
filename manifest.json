@@ -1,10 +1,10 @@
 {
   "manifest_version": 2,
-  "name": "Radiodan Discovery",
-  "description": "Display available Radiodans and control them",
+  "name": "MediaScape Discovery",
+  "description": "Display available radios and control them",
   "version": "0.0.1",
   "icons": {
-    "128": "shared/icon128.png"
+    "128": "shared/icon.png"
   },
   "browser_action": {
     "default_icon": "shared/icon.png",

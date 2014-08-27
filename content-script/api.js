@@ -41,8 +41,8 @@ window.mediascape = (function () {
     The first player is assumed.
   */
   function play(url, device) {
-    var radiodan = Radiodan.create('http://'+device.address+':'+device.port);
-    var player = radiodan.player.create(device.txt.players[0].id);
+    var radio = Radiodan.create('http://'+device.address+':'+device.port);
+    var player = radio.player.create(device.txt.players[0].id);
     player.clear()
           .then(function () { return player.add({ playlist: [ url ] }) })
           .then(player.play);
