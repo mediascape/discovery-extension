@@ -6,6 +6,10 @@ if(!helperApp) {
   connectToHelperApp();
 }
 
+// No devices
+chrome.browserAction.setBadgeText({ text: '0' });
+
+
 /*
   Listen for messages from Discovery Helper Chrome App
   The messages is always an array of devices found.
@@ -14,6 +18,8 @@ chrome.runtime.onMessageExternal.addListener(function (message) {
   console.log("message received from app", message);
   services = message;
   DeviceList.set(message);
+
+  chrome.browserAction.setBadgeText({ text: message.length + '' || '0' });
 });
 
 /*
