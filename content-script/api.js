@@ -68,30 +68,34 @@ window.mediascape = (function () {
     }
 
     deviceUiPromise = new Promise(function (resolve, reject) {
-      var html = '<h1>Select a device to play on:</h1><ul>';
+      var html = '<h1 class="hd">Send <span>to your radio</span></h1>';
+      html += '<ul>';
       html += services.map(function (service, index) {
-        return '<li class="service" data-mediascape-service-index="' + index + '">'
-                + service.host
-                + '<span class="host">'
-                + urlFor(service)
-                + '</span>'
+        return '<li class="mediascape-device-item" data-mediascape-service-index="' + index + '">'
+                + '<a href="#">' + service.host + '</a>'
                '</li>';
       }).join('');
-      html += '<li>Close</li>';
       html += '</ul>';
+      html += '<a class="mediascape-close-btn" href="#">'
+      html +=   '<img src="' + chrome.extension.getURL('shared/close-icon.svg') + '" alt="Close">'
+      html += '</a>';
       container.innerHTML = html;
 
       // Show container
       Velocity(container, 'slideDown');
 
       container.addEventListener('click', function (evt) {
-        console.log('evt.target', evt.target);
         var target = traverseParentsToFindTag( evt.target, 'LI' ),
             index;
 
         if (target) {
           index = target.getAttribute('data-mediascape-service-index');
         } else {
+          target = traverseParentsToFindTag(evt.target, 'A');
+        }
+
+        // No device item or close button
+        if (!target) {
           return;
         }
 
