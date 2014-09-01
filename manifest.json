@@ -23,6 +23,8 @@
       ],
       "js": [
         "remote/js/radiodan.min.js",
+        "shared/lib/velocity.min.js",
+        "shared/lib/velocity.ui.js",
         "shared/lib/lodash.min.js",
         "shared/device-list.js",
         "content-script/api.js",

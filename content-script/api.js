@@ -81,6 +81,9 @@ window.mediascape = (function () {
       html += '</ul>';
       container.innerHTML = html;
 
+      // Show container
+      Velocity(container, 'slideDown');
+
       container.addEventListener('click', function (evt) {
         console.log('evt.target', evt.target);
         var target = traverseParentsToFindTag( evt.target, 'LI' ),
@@ -98,8 +101,17 @@ window.mediascape = (function () {
           reject();
         }
 
-        deviceUiPromise = null;
-        container.innerHTML = '';
+        // Hide container
+        Velocity(
+          container,
+          'slideUp',
+          {
+            complete: function (){
+              deviceUiPromise = null;
+              container.innerHTML = '';
+            }
+          }
+        );
       })
     });
 
