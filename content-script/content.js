@@ -39,7 +39,11 @@ function attributeChangeObserver(mutations) {
 function attachEventHandlerForEl(el) {
   el.addEventListener('click', function (evt) {
     var url = el.getAttribute(MEDIASCAPE_ATTRIBUTE_NAME);
-    mediascape.play(url);
+    mediascape.play(url)
+              .then(
+                function (data) { console.log('Play - success', data);  },
+                function (data) { console.warn('Play - failure', data); }
+              );
   });
 }
 

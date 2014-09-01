@@ -20,16 +20,15 @@ window.mediascape = (function () {
     return new Promise(function (resolve, reject) {
       DeviceList.get()
         .then(function (devices) {
-          var div = document.createElement('div');
-          div.className = 'mediascape-device-list mediascape-float-panel';
-          document.body.appendChild(div);
-          return createDeviceListUi(devices, div);
+          var container = findOrCreateDeviceContainer(document.body);
+          return createDeviceListUi(devices, container);
         })
         .then(function (device) {
           play(url, device);
           resolve(url);
         })
-        .then(null, function () {
+        .then(null, function (error) {
+          if (error) { console.error(error); }
           reject(new Error('User did not give permission to play'));
         });
     });
@@ -69,7 +68,7 @@ window.mediascape = (function () {
     }
 
     deviceUiPromise = new Promise(function (resolve, reject) {
-      var html = '<p>Select a device to play on:</p><ul>';
+      var html = '<h1>Select a device to play on:</h1><ul>';
       html += services.map(function (service, index) {
         return '<li class="service" data-mediascape-service-index="' + index + '">'
                 + service.host
@@ -89,6 +88,8 @@ window.mediascape = (function () {
 
         if (target) {
           index = target.getAttribute('data-mediascape-service-index');
+        } else {
+          return;
         }
 
         if (index) {
@@ -104,6 +105,17 @@ window.mediascape = (function () {
 
     return deviceUiPromise;
   };
+
+  var deviceContainer;
+  function findOrCreateDeviceContainer(root) {
+    if (!deviceContainer) {
+      deviceContainer = document.createElement('div');
+      deviceContainer.className = 'mediascape-device-list mediascape-ui-panel';
+      root.insertBefore(deviceContainer, root.firstChild);
+    }
+
+    return deviceContainer;
+  }
 
   /*
     Helper - find ancestor DOM elemenets until 

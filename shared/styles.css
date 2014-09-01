@@ -2,10 +2,14 @@
   All styles should be prefixed .mediascape- to 
   ensure styles don't leak into the parent page
 */
-.mediascape-float-panel {
-  position: absolute;
-  top: 0;
-  left: 0;
+.mediascape-ui-panel {
+  display: block;
+  width: 100%;
+  padding: 0.5em 1em;
+}
+
+.mediascape-ui-panel h1 {
+  margin: 0;
 }
 
 .mediascape-device-list {
