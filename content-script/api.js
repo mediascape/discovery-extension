@@ -68,7 +68,7 @@ window.mediascape = (function () {
     }
 
     deviceUiPromise = new Promise(function (resolve, reject) {
-      var html = '<h1 class="hd">Send <span>to your radio</span></h1>';
+      var html = '<h1 class="mediascape-hd">Send <span>to your radio</span></h1>';
       html += '<ul>';
       html += services.map(function (service, index) {
         return '<li class="mediascape-device-item" data-mediascape-service-index="' + index + '">'

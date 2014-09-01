@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function display(msg) {
-  var el = document.body;
+  var el = document.querySelector('.mediascape-ui-panel');
   el.innerHTML = msg;
 }
 
@@ -23,26 +23,34 @@ function urlFor(service) {
 }
 
 function displayMessages(backgroundPage) {
-  var html = '<ul class="mediascape-device-list">',
-      services = backgroundPage.services;
+  var services = backgroundPage.services,
+      html = '';
+
+  html += '<h1 class="mediascape-hd">Remote control <span>a radio</span></h1>';
+  html += '<ul>';
 
   html += services.map(function (service) {
-    return '<li class="service">'
-            + service.host
-            + '<span class="host">'
-            + urlFor(service)
-            + '</span>'
+    return '<li class="mediascape-device-item">'
+            + '<a href="#">' + service.host + '</a>'
            '</li>';
   }).join('');
   html += '</ul>';
+  html += '<a class="mediascape-close-btn" href="#">'
+  html +=   '<img src="' + chrome.extension.getURL('shared/close-icon.svg') + '" alt="Close">'
+  html += '</a>';
   display(html);
 
-  var items = Array.prototype.slice.call(document.getElementsByClassName('service')),
+  var items = Array.prototype.slice.call(document.querySelectorAll('.mediascape-device-item')),
       uiPage = chrome.extension.getURL('remote/index.html');
 
   items.forEach(function(li, index) {
     li.addEventListener('click', function() {
       chrome.tabs.create({url: uiPage + '?service=' + index});
     });
+  });
+
+  var closeButton = document.querySelector('.mediascape-close-btn');
+  closeButton.addEventListener('click', function() {
+    window.close();
   });
 }

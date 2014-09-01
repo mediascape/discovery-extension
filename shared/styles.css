@@ -2,18 +2,31 @@
   All styles should be prefixed .mediascape- to 
   ensure styles don't leak into the parent page
 */
+.mediascape-ui-window {
+  font-size: 62.5%;
+  min-width: 600px;
+
+  margin: 0;
+  padding: 0;
+}
+
 .mediascape-ui-panel {
   display: block;
   width: 100%;
   padding: 0.5em 1em;
+
+  color: #333;
+  background-color: #DDD;
+
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
-.mediascape-ui-panel .hd {
+.mediascape-ui-panel .mediascape-hd {
   width: 25%;
   margin: 0;
 }
 
-.mediascape-ui-panel .hd > span {
+.mediascape-ui-panel .mediascape-hd > span {
   display: block;
   font-size: 0.5em;
 }
@@ -28,9 +41,6 @@
 }
 
 .mediascape-device-list {
-  color: #333;
-  background-color: rgba(255, 255, 255, 0.9);
-
   font-family: sans-serif;
   font-size: 2em;
 
