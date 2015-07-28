@@ -29,8 +29,11 @@ function play(url, deviceName) {
     console.log('device info lookup', info);
     var adaptor = PlayerStore.findOrCreatePlayerByService(info);
 
-    adaptor.clear()
-      .then(function () { return adaptor.add({ playlist: [ url ] }) })
+    adaptor
+      .clearPlaylist()
+      .then(function () {
+        return adaptor.addToPlaylist({ playlist: [ url ] })
+      })
       .then(adaptor.play);
   });
 }
