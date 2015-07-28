@@ -27,14 +27,7 @@ function play(url, deviceName) {
   var deviceInfo = DeviceList.getByServiceName(deviceName);
   deviceInfo.then(function (info) {
     console.log('device info lookup', info);
-    var adaptor = devices[deviceName],
-        uri = info.uri,
-        playerId = info.txt.players[0];
-
-    if (!adaptor) {
-      adaptor = Radiodan.create(uri).player.create(playerId);
-      devices[deviceName] = adaptor;
-    }
+    var adaptor = PlayerStore.findOrCreatePlayerByService(info);
 
     adaptor.clear()
       .then(function () { return adaptor.add({ playlist: [ url ] }) })

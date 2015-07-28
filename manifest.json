@@ -17,6 +17,8 @@
       "remote/js/radiodan.min.js",
       "shared/lib/lodash.min.js",
       "shared/device-list.js",
+      "background/radiodan-player.js",
+      "background/player-store.js",
       "background/background.js"
     ],
     "persistent": false
