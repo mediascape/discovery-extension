@@ -3,27 +3,41 @@
   media stream e.g.
   <div data-mediascape-playable-stream="http://example.com/radio-stream">
 */
-var MEDIASCAPE_ATTRIBUTE_NAME = 'data-mediscape-playable-stream';
+var MEDIASCAPE_ATTRIBUTE_NAME = 'data-mediascape-playable-stream';
 
 /*
   Attach a mutation observer to the entire document.
   When an attribute is changed, the callback is fired.
 */
 var observer = new MutationObserver(attributeChangeObserver);
-observer.observe(document.body, { 
+observer.observe(document.body, {
   attributes: true,
   subtree: true
 });
 
+init();
+
 /*
-  Attaches event handler to all elements that 
-  have the MEDIASCAPE_ATTRIBUTE_NAME attribute 
+  Capture any playable elements in the page
+  on startup
+*/
+function init() {
+  // Attach listens to anything in the page on load
+  _.forEach(
+    document.querySelectorAll('[' + MEDIASCAPE_ATTRIBUTE_NAME + ']'),
+    attachEventHandlerForEl
+  );
+}
+
+/*
+  Attaches event handler to all elements that
+  have the MEDIASCAPE_ATTRIBUTE_NAME attribute
 */
 function attributeChangeObserver(mutations) {
 
   var changes = _.filter(mutations, isInterestingMutation);
-  if (changes.length > 0) { 
-    console.log('changes', changes); 
+  if (changes.length > 0) {
+    console.log('changes', changes);
   }
 
   // target is the DOM elemenet containing
@@ -33,10 +47,11 @@ function attributeChangeObserver(mutations) {
 }
 
 /*
-  Attach a click event handler that attempts to 
+  Attach a click event handler that attempts to
   play the given stream when it's clicked
 */
 function attachEventHandlerForEl(el) {
+  console.log('attachEventHandlerForEl', el);
   el.addEventListener('click', function (evt) {
     var url = el.getAttribute(MEDIASCAPE_ATTRIBUTE_NAME);
     mediascape.play(url)

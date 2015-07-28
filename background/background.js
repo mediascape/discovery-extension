@@ -1,5 +1,5 @@
 var services = [],
-    radios   = [],
+    devices  = {},
     helperApp;
 
 if(!helperApp) {
@@ -9,6 +9,38 @@ if(!helperApp) {
 // No devices
 chrome.browserAction.setBadgeText({ text: '0' });
 
+/*
+  Listen for messages from content scripts
+  requesting playback
+*/
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    var isContentScript = !!sender.tab;
+    if (isContentScript && request.action === 'play') {
+      play(request.url, request.deviceName);
+    }
+    //sendResponse({farewell: "goodbye"});
+  }
+);
+
+function play(url, deviceName) {
+  var deviceInfo = DeviceList.getByServiceName(deviceName);
+  deviceInfo.then(function (info) {
+    console.log('device info lookup', info);
+    var adaptor = devices[deviceName],
+        uri = info.uri,
+        playerId = info.txt.players[0];
+
+    if (!adaptor) {
+      adaptor = Radiodan.create(uri).player.create(playerId);
+      devices[deviceName] = adaptor;
+    }
+
+    adaptor.clear()
+      .then(function () { return adaptor.add({ playlist: [ url ] }) })
+      .then(adaptor.play);
+  });
+}
 
 /*
   Listen for messages from Discovery Helper Chrome App
@@ -23,8 +55,8 @@ chrome.runtime.onMessageExternal.addListener(function (message) {
 });
 
 /*
-  Subscribe to messages from the Discovery Helper 
-  Chrome App. 
+  Subscribe to messages from the Discovery Helper
+  Chrome App.
   This is required so the helper knows
   which ID to send messages to.
 */

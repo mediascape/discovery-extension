@@ -1,7 +1,7 @@
 /**
-  Singleton representing a list 
-  of devices. It proxies across the Chrome 
-  extension boundary and so it can be used 
+  Singleton representing a list
+  of devices. It proxies across the Chrome
+  extension boundary and so it can be used
   from the content script and the background
   page
 */
@@ -47,6 +47,19 @@ var DeviceList = (function () {
         }
       );
     }
+    });
+  };
+
+  /*
+    Get a specific device by it's service name
+  */
+  instance.getByServiceName = function (serviceName) {
+    var self = this;
+    return new Promise(function (resolve, reject) {
+      self.get()
+        .then(function (list) {
+          resolve( _.find(list, { serviceName: serviceName }) );
+        });
     });
   };
 

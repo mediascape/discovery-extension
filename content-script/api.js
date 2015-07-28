@@ -6,8 +6,8 @@ window.mediascape = (function () {
   var instance = {};
 
   /*
-    Calling `play(url)` injects a device selection 
-    UI into the page. If a user chooses a device 
+    Calling `play(url)` injects a device selection
+    UI into the page. If a user chooses a device
     then the stream is passed to that device.
     If the user closes the UI then the stream is not
     sent.
@@ -35,20 +35,16 @@ window.mediascape = (function () {
   };
 
   /*
-    Play an url on a device using the 
-    Radiodan client library.
-    The first player is assumed.
+    Send a message requesting playback to the background
+    page
   */
   function play(url, device) {
-    var radio = Radiodan.create('http://'+device.address+':'+device.port);
-    var player = radio.player.create(device.txt.players[0].id);
-    player.clear()
-          .then(function () { return player.add({ playlist: [ url ] }) })
-          .then(player.play);
-  }
-
-  function urlFor(service) {
-    return service.address + ':' + service.port;
+    chrome.runtime.sendMessage(
+      { action: 'play', url: url, deviceName: device.serviceName },
+      function(response) {
+        console.log(response);
+      }
+    );
   }
 
   // Track whether a device list selection is in progress
@@ -56,7 +52,7 @@ window.mediascape = (function () {
   var deviceUiPromise;
 
   /*
-    Creates a list of device services in 
+    Creates a list of device services in
     the DOM element container provided.
     Returns a Promise
       Resolves: with a `device` spec if a device is selected
@@ -134,7 +130,7 @@ window.mediascape = (function () {
   }
 
   /*
-    Helper - find ancestor DOM elemenets until 
+    Helper - find ancestor DOM elemenets until
     tag matches
   */
   function traverseParentsToFindTag(node, tag) {
