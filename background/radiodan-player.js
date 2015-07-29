@@ -40,7 +40,7 @@ window.radiodanPlayer = (function () {
           return player.remove({ position: position });
         },
         status: function status() {
-          return player.status();
+          return player.status().then(function (s) { return s.response; });
         }
       }
     }

@@ -16,7 +16,7 @@ var view,
 
 function init(backgroundPage) {
 
-  var serviceId = window.location.search.match(/service=([^&]*)/i)[1];
+  var serviceId = decodeURIComponent(window.location.search.match(/service=([^&]*)/i)[1]);
 
   backgroundPage
     .playerByServiceName(serviceId)
@@ -145,7 +145,6 @@ function fetchAndUpdateInitialState(player, view) {
   player.status()
     .then(function (status) {
       console.log('player.status', status);
-      status = status.response;
 
       if (status.playlist) {
         view.set('state.playlist', status.playlist);
