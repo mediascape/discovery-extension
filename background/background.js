@@ -32,7 +32,7 @@ function play(url, deviceName) {
     adaptor
       .clearPlaylist()
       .then(function () {
-        return adaptor.addToPlaylist({ playlist: [ url ] })
+        return adaptor.addToPlaylist(url);
       })
       .then(adaptor.play);
   });
