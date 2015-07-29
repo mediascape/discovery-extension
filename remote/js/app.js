@@ -11,7 +11,8 @@
 
 chrome.runtime.getBackgroundPage(init);
 
-var view;
+var view,
+    currentPlayer;
 
 function init(backgroundPage) {
 
@@ -30,21 +31,25 @@ function buildUiWithPlayer(player) {
 
   console.log('player: ', player);
 
+  currentPlayer = player;
+
   view = new Ractive({
     el: '#view',
     template: '#view-template',
     data: {
-      currentPlayer: player,
-      // players: players,
-      // streams: [],
-      // search: {
-      //   term: '',
-      //   results: []
-      // },
-      // volume: null
+      players: [],
+      state: {},
+      streams: [],
+      search: {
+        term: '',
+        results: []
+      },
+      volume: null
     },
     debug: true
   });
+
+  view.set('state.name', player.name);
 
   // view.observe('currentPlayer', function (newValue, oldValue, obj) {
   //   console.log('current', newValue, oldValue, obj);
@@ -63,16 +68,16 @@ function buildUiWithPlayer(player) {
   // view.on('stream', function (evt) {
   //   evt.original.preventDefault();
   //   var url = evt.node.href;
-  //   addToPlaylist(url).then(play);
+  //   evt.context.currentPlayer.addToPlaylist(url).then(currentPlayer.play);
   // });
   //
-  // view.on('next', function (evt) { nextTrack(); });
-  // view.on('previous', function (evt) { previousTrack(); });
+  // view.on('next', function (evt) { evt.context.currentPlayer.nextTrack(); });
+  // view.on('previous', function (evt) { evt.context.currentPlayer.previousTrack(); });
   //
   // view.on('clear', function (evt) {
-  //   clearPlaylist();
+  //   evt.context.currentPlayer.clearPlaylist();
   // });
-  //
+
   // view.on('remove', function (evt) {
   //   var pos = evt.context.Pos;
   //   removeFromPlaylist(pos);
@@ -101,15 +106,15 @@ function buildUiWithPlayer(player) {
   //   }
   // });
   //
-  // view.on('play-pause', function handlePlayPause(evt) {
-  //   // Get the current button state
-  //   var currentState = evt.context.currentPlayer.state;
-  //   if (currentState === 'play') {
-  //     pause();
-  //   } else {
-  //     play();
-  //   }
-  // });
+  view.on('play-pause', function handlePlayPause(evt) {
+    // Get the current button state
+    var currentState = evt.context.state.playback;
+    if (currentState === 'play') {
+      currentPlayer.pause();
+    } else {
+      currentPlayer.play();
+    }
+  });
   //
   // document.addEventListener('searchresults', function (evt) {
   //   view.set('search.results', evt.results);
@@ -127,6 +132,64 @@ function buildUiWithPlayer(player) {
   function buildServicesList(json) {
     view.set('streams', json.services);
   }
+
+  fetchAndUpdateInitialState(player, view);
+  addPlayerStateChangeListeners(player, view);
+}
+
+function fetchAndUpdateInitialState(player, view) {
+  console.log('fetchAndUpdateInitialState', player, view);
+
+  // Get status to do an initial update of
+  // the user interface
+  player.status()
+    .then(function (status) {
+      console.log('player.status', status);
+      status = status.response;
+
+      if (status.playlist) {
+        view.set('state.playlist', status.playlist);
+      }
+
+      if (status.player.state) {
+        // playerSpec.state = status.player.state;
+        view.set('state.playback', status.player.state);
+      }
+
+      if (status.player.song) {
+        // playerSpec.current = status.player.song;
+      }
+
+      if (status.player.nextsong) {
+        // playerSpec.next = status.player.nextsong;
+      }
+    });
+}
+
+function addPlayerStateChangeListeners(player, view) {
+  /*
+    Listen for general player state changes
+  */
+  player.on('player', function (info) {
+    console.log('info', info);
+
+    if (info.state) {
+      // playerSpec.state = info.state;
+      view.set('state.playback', info.state);
+    }
+
+    if (info.song) {
+      // playerSpec.current = info.song;
+      view.set('state.current', info.song);
+    }
+
+    if (info.nextsong) {
+      // playerSpec.next = info.nextsong;
+      view.set('state.next', info.nextsong);
+    }
+
+    // view.update();
+  });
 }
 
 function createAndAttachPlayer(playerSpec) {
@@ -155,21 +218,21 @@ function createAndAttachPlayer(playerSpec) {
     .then(function (status) {
       console.log('player.status', status);
 
-      if (status.playlist) {
-        playerSpec.playlist = status.playlist;
-      }
-
-      if (status.player.state) {
-        playerSpec.state = status.player.state;
-      }
-
-      if (status.player.song) {
-        playerSpec.current = status.player.song;
-      }
-
-      if (status.player.nextsong) {
-        playerSpec.next = status.player.nextsong;
-      }
+      // if (status.playlist) {
+      //   playerSpec.playlist = status.playlist;
+      // }
+      //
+      // if (status.player.state) {
+      //   playerSpec.state = status.player.state;
+      // }
+      //
+      // if (status.player.song) {
+      //   playerSpec.current = status.player.song;
+      // }
+      //
+      // if (status.player.nextsong) {
+      //   playerSpec.next = status.player.nextsong;
+      // }
 
       console.log('update view');
       view.update();

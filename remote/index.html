@@ -14,7 +14,7 @@
 
   <!-- Main view template -->
   <script id="view-template" type='text/ractive'>
-  <h1>MediaScape Client Examples ({{ currentPlayer.name }})</h1>
+  <h1>MediaScape Client Examples ({{ state.name }})</h1>
   <div class="pure-g-r">
     <div class="pure-u-1-2">
       <div class="pure">
@@ -29,7 +29,7 @@
           <button id="previous" on-click="previous" class="no-button control">
             <i class="fa fa-backward"></i>
           </button>
-          <button id="play-pause" on-click="play-pause" data-state="{{ currentPlayer.state == 'play' ? 'playing' : 'paused' }}" class="play-pause no-button control">
+          <button id="play-pause" on-click="play-pause" data-state="{{ state.playback == 'play' ? 'playing' : 'paused' }}" class="play-pause no-button control">
             <i class="fa fa-play transition-opacity"></i>
             <i class="fa fa-pause transition-opacity"></i>
           </button>
@@ -67,8 +67,8 @@
               <td>{{ Artist || '' }}</td>
               <td>00:00</td>
               <td>
-                <button class="remove no-button" 
-                        on-click="remove:Pos" 
+                <button class="remove no-button"
+                        on-click="remove:Pos"
                         data-pos="{{Pos}}"><i class="fa fa-times-circle"></i></button>
               </td>
             </tr>
@@ -133,7 +133,7 @@
            <a on-click="stream" href={{ audioStreams[0].url }}>
              <img src="{{ logos.active }}" />
              <span>
-               <i class="fa fa-plus-circle"></i> 
+               <i class="fa fa-plus-circle"></i>
                {{ nowAndNext[0].brand || '' }}
              </span>
            </a>
