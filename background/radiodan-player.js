@@ -38,6 +38,9 @@ window.radiodanPlayer = (function () {
         },
         removeFromPlaylist: function removeFromPlaylist(position) {
           return player.remove({ position: position });
+        },
+        status: function status() {
+          return player.status();
         }
       }
     }
