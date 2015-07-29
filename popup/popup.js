@@ -1,9 +1,9 @@
 /*
-  Display a list of found devices on the local 
+  Display a list of found devices on the local
   network.
-  
+
   When a device is selected, open the remote
-  control tab specifying the correct device to 
+  control tab specifying the correct device to
   connect to.
 */
 
@@ -30,7 +30,7 @@ function displayMessages(backgroundPage) {
   html += '<ul>';
 
   html += services.map(function (service) {
-    return '<li class="mediascape-device-item">'
+    return '<li class="mediascape-device-item" data-service-name="' + service.serviceName + '">'
             + '<a href="#">' + service.host + '</a>'
            '</li>';
   }).join('');
@@ -45,7 +45,8 @@ function displayMessages(backgroundPage) {
 
   items.forEach(function(li, index) {
     li.addEventListener('click', function() {
-      chrome.tabs.create({url: uiPage + '?service=' + index});
+      var serviceName = this.getAttribute('data-service-name');
+      chrome.tabs.create({url: uiPage + '?service=' + encodeURIComponent(serviceName) });
     });
   });
 

@@ -9,124 +9,124 @@
 */
 'use strict';
 
-chrome.runtime.getBackgroundPage(buildUI);
+chrome.runtime.getBackgroundPage(init);
 
 var view;
 
-function buildUI(backgroundPage) {
+function init(backgroundPage) {
 
-  var serviceId = window.location.search.match(/service=([^&]*)/i)[1],
-      services  = backgroundPage.services,
-      radio     = services[serviceId],
-      players   = radio.txt.players,
-      currentPlayer = players[0];
+  var serviceId = window.location.search.match(/service=([^&]*)/i)[1];
 
-  setupRadio(radio);
-  players.forEach(function (player) {
-    createAndAttachPlayer(player);
-  });
+  backgroundPage
+    .playerByServiceName(serviceId)
+    .then(buildUiWithPlayer);
+}
+
+function buildUiWithPlayer(player) {
+
+  if (!player) {
+    throw new Error('Player not found');
+  }
+
+  console.log('player: ', player);
 
   view = new Ractive({
     el: '#view',
     template: '#view-template',
     data: {
-      currentPlayer: currentPlayer,
-      players: players,
-      streams: [],
-      search: {
-        term: '',
-        results: []
-      },
-      volume: null
+      currentPlayer: player,
+      // players: players,
+      // streams: [],
+      // search: {
+      //   term: '',
+      //   results: []
+      // },
+      // volume: null
     },
     debug: true
   });
 
-  view.observe('currentPlayer', function (newValue, oldValue, obj) {
-    console.log('current', newValue, oldValue, obj);
-    if (oldValue === undefined  || (newValue && newValue.id !== oldValue.id) ) {
-      console.log('Swap global player', newValue, oldValue, obj);
-      window.ui.player = newValue.player;
-      view.set('search', { term: '', results: [] });
-    }
-  });
-
-  view.observe('search.term', function (newValue) {
-    console.log('search.term', newValue);
-    search(newValue);
-  });
-
-  view.on('stream', function (evt) {
-    evt.original.preventDefault();
-    var url = evt.node.href;
-    addToPlaylist(url).then(play);
-  });
-
-  view.on('next', function (evt) { nextTrack(); });
-  view.on('previous', function (evt) { previousTrack(); });
-
-  view.on('clear', function (evt) {
-    clearPlaylist();
-  });
-
-  view.on('remove', function (evt) {
-    var pos = evt.context.Pos;
-    removeFromPlaylist(pos);
-  });
-
-  view.on('add-direct', function (evt) {
-    var file = evt.context.file;
-    if (file) {
-      addToPlaylist(file);
-      this.set('file', '');
-    }
-  });
-
-  view.on('add', function (evt) {
-    var file = evt.context.file;
-    addToPlaylist(file);
-  });
-
-  view.observe('volume', function (newValue, oldValue) {
-    console.log('ui volume changed', newValue, oldValue);
-    var firstSetting = newValue === null || oldValue === null;
-    // Only send updates if change is from UI
-    if (!firstSetting) {
-      console.log('send state update', newValue);
-      setVolume(newValue);
-    }
-  });
-
-  view.on('play-pause', function handlePlayPause(evt) {
-    // Get the current button state
-    var currentState = evt.context.currentPlayer.state;
-    if (currentState === 'play') {
-      pause();
-    } else {
-      play();
-    }
-  });
-
-  document.addEventListener('searchresults', function (evt) {
-    view.set('search.results', evt.results);
-  });
+  // view.observe('currentPlayer', function (newValue, oldValue, obj) {
+  //   console.log('current', newValue, oldValue, obj);
+  //   if (oldValue === undefined  || (newValue && newValue.id !== oldValue.id) ) {
+  //     console.log('Swap global player', newValue, oldValue, obj);
+  //     window.ui.player = newValue.player;
+  //     view.set('search', { term: '', results: [] });
+  //   }
+  // });
+  //
+  // view.observe('search.term', function (newValue) {
+  //   console.log('search.term', newValue);
+  //   search(newValue);
+  // });
+  //
+  // view.on('stream', function (evt) {
+  //   evt.original.preventDefault();
+  //   var url = evt.node.href;
+  //   addToPlaylist(url).then(play);
+  // });
+  //
+  // view.on('next', function (evt) { nextTrack(); });
+  // view.on('previous', function (evt) { previousTrack(); });
+  //
+  // view.on('clear', function (evt) {
+  //   clearPlaylist();
+  // });
+  //
+  // view.on('remove', function (evt) {
+  //   var pos = evt.context.Pos;
+  //   removeFromPlaylist(pos);
+  // });
+  //
+  // view.on('add-direct', function (evt) {
+  //   var file = evt.context.file;
+  //   if (file) {
+  //     addToPlaylist(file);
+  //     this.set('file', '');
+  //   }
+  // });
+  //
+  // view.on('add', function (evt) {
+  //   var file = evt.context.file;
+  //   addToPlaylist(file);
+  // });
+  //
+  // view.observe('volume', function (newValue, oldValue) {
+  //   console.log('ui volume changed', newValue, oldValue);
+  //   var firstSetting = newValue === null || oldValue === null;
+  //   // Only send updates if change is from UI
+  //   if (!firstSetting) {
+  //     console.log('send state update', newValue);
+  //     setVolume(newValue);
+  //   }
+  // });
+  //
+  // view.on('play-pause', function handlePlayPause(evt) {
+  //   // Get the current button state
+  //   var currentState = evt.context.currentPlayer.state;
+  //   if (currentState === 'play') {
+  //     pause();
+  //   } else {
+  //     play();
+  //   }
+  // });
+  //
+  // document.addEventListener('searchresults', function (evt) {
+  //   view.set('search.results', evt.results);
+  // });
 
   /*
    Live streams list
   */
   var streamsEl = document.querySelector('.streams');
   window.getJSON(
-      'http://bbcradioservices.pixelblend.co.uk/services.json',
+      'http://bbc.services.radiodan.net/services.json',
       buildServicesList
       );
 
   function buildServicesList(json) {
     view.set('streams', json.services);
   }
-}
-
-function setupRadio(service) {
-  window.radio = window.Radiodan.create('http://'+service.address+':'+service.port);
 }
 
 function createAndAttachPlayer(playerSpec) {
@@ -158,7 +158,7 @@ function createAndAttachPlayer(playerSpec) {
       if (status.playlist) {
         playerSpec.playlist = status.playlist;
       }
-      
+
       if (status.player.state) {
         playerSpec.state = status.player.state;
       }

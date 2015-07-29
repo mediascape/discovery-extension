@@ -23,6 +23,14 @@ chrome.runtime.onMessage.addListener(
   }
 );
 
+function playerByServiceName(deviceName) {
+  return DeviceList
+    .getByServiceName(deviceName)
+    .then(function (info) {
+      return PlayerStore.findOrCreatePlayerByService(info);
+    });
+}
+
 function play(url, deviceName) {
   var deviceInfo = DeviceList.getByServiceName(deviceName);
   deviceInfo.then(function (info) {

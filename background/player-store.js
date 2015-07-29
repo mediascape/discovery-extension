@@ -11,6 +11,7 @@ window.PlayerStore = (function () {
 
     if ( !players[name] ) {
       players[name] = adaptors[type].create(service);
+      players[name].name = service.host;
       console.log('Created new player %o of type %o', name, type);
     }
 
