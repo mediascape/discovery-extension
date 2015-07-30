@@ -41,7 +41,7 @@
         </div>
         <label class="group volume control pure-u-1-2">
           <i class="fa fa-volume-up"></i>
-          <input id="volume" class="volume" type="range" value="{{ volume }}" min="0" max="100" />
+          <input id="volume" class="volume" type="range" value="{{ state.volume }}" min="0" max="100" />
           <span class="current-volume"></span>
         </label>
       </div>
@@ -61,7 +61,7 @@
             </tr>
           </thead>
           <tbody>
-            {{#currentPlayer.playlist}}
+            {{#state.playlist}}
             <tr class="{{ Pos === ../../current ? 'is-current' : '' }} {{ Pos === ../../next ? 'is-next' : '' }}">
               <td><i class="indicator fa fa-circle"></i></td>
               <td>{{ Pos }}</td>
@@ -74,11 +74,10 @@
                         data-pos="{{Pos}}"><i class="fa fa-times-circle"></i></button>
               </td>
             </tr>
-            {{/currentPlayer}}
-
-            {{^currentPlayer}}
+            {{/state}}
+            {{^state.playlist}}
             <tr><td colspan="6">Playlist is empty</td></tr>
-            {{/currentPlayer}}
+            {{/state}}
           </tbody>
         </table>
       </div>
