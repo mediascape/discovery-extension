@@ -79,15 +79,6 @@ function fetchLiveStreams() {
 }
 
 function attachViewEventListeners (view) {
-  // view.observe('currentPlayer', function (newValue, oldValue, obj) {
-  //   console.log('current', newValue, oldValue, obj);
-  //   if (oldValue === undefined  || (newValue && newValue.id !== oldValue.id) ) {
-  //     console.log('Swap global player', newValue, oldValue, obj);
-  //     window.ui.player = newValue.player;
-  //     view.set('search', { term: '', results: [] });
-  //   }
-  // });
-  //
   view.observe('search.term', function (newValue) {
     console.log('search.term', newValue);
     currentPlayer
