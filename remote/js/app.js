@@ -33,25 +33,52 @@ function buildUiWithPlayer(player) {
 
   currentPlayer = player;
 
-  view = new Ractive({
-    el: '#view',
-    template: '#view-template',
-    data: {
-      players: [],
-      state: {},
-      streams: [],
-      search: {
-        term: '',
-        results: []
-      },
-      volume: null
-    },
-    debug: true
-  });
+  view = createView();
+
+  attachViewEventListeners(view);
 
   // Set the name of the current device
   view.set('state.name', player.name);
 
+  fetchLiveStreams()
+    .then(function (streams) {
+      view.set('streams', streams);
+    });
+
+  addPlayerStateChangeListeners(player, view);
+  fetchAndUpdateInitialState(player, view);
+}
+
+
+/*
+  Live streams list
+*/
+function buildServicesList(json) {
+  var promises = [];
+  json.services.forEach(function (s) {
+    promises.push( bbc.radio.extractStreamForUrl(s.playlist) );
+  });
+  return Promise.all(promises)
+    .then(function (urls) {
+      return json.services.map(function (service, index) {
+        service.playlist = urls[index];
+        return service;
+      });
+    });
+}
+
+function fetchLiveStreams() {
+  return xhr.get('http://bbc.services.radiodan.net/services.json')
+      .then(function (data) {
+        return JSON.parse(data);
+      })
+      .then(
+        buildServicesList,
+        function (err) { console.error('Error fetching streams', err); }
+      );
+}
+
+function attachViewEventListeners (view) {
   // view.observe('currentPlayer', function (newValue, oldValue, obj) {
   //   console.log('current', newValue, oldValue, obj);
   //   if (oldValue === undefined  || (newValue && newValue.id !== oldValue.id) ) {
@@ -130,33 +157,26 @@ function buildUiWithPlayer(player) {
   // document.addEventListener('searchresults', function (evt) {
   //   view.set('search.results', evt.results);
   // });
+}
 
-  /*
-   Live streams list
-  */
-  var streamsEl = document.querySelector('.streams');
-  window.getJSON(
-      'http://bbc.services.radiodan.net/services.json',
-      buildServicesList
-      );
+function createView() {
+  var view = new Ractive({
+    el: '#view',
+    template: '#view-template',
+    data: {
+      players: [],
+      state: {},
+      streams: [],
+      search: {
+        term: '',
+        results: []
+      },
+      volume: null
+    },
+    debug: true
+  });
 
-  function buildServicesList(json) {
-    var promises = [];
-    json.services.forEach(function (s) {
-      promises.push( bbc.radio.extractStreamForUrl(s.playlist) );
-    });
-    Promise.all(promises)
-      .then(function (urls) {
-        var services = json.services.map(function (service, index) {
-          service.playlist = urls[index];
-          return service;
-        });
-        view.set('streams', services);
-      });
-  }
-
-  addPlayerStateChangeListeners(player, view);
-  fetchAndUpdateInitialState(player, view);
+  return view;
 }
 
 function fetchAndUpdateInitialState(player, view) {
