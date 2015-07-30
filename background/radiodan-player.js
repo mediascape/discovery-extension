@@ -41,6 +41,9 @@ window.radiodanPlayer = (function () {
         },
         status: function status() {
           return player.status().then(function (s) { return s.response; });
+        },
+        on: function (name, callback) {
+          return player.on(name, callback);
         }
       }
     }
