@@ -136,7 +136,7 @@ function attachViewEventListeners (view) {
     console.log('ui volume changed from %o to %o ', oldValue, newValue);
     var firstSetting = newValue === null || oldValue === null;
     // Only send updates if change is from UI
-    if (!firstSetting) {
+    if (!firstSetting && newValue !== oldValue) {
       console.log('update volume to ', newValue);
       currentPlayer.setVolume(newValue);
     }
