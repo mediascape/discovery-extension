@@ -64,13 +64,15 @@ function buildUiWithPlayer(player) {
   //   console.log('search.term', newValue);
   //   search(newValue);
   // });
-  //
-  // view.on('stream', function (evt) {
-  //   evt.original.preventDefault();
-  //   var url = evt.node.href;
-  //   evt.context.currentPlayer.addToPlaylist(url).then(currentPlayer.play);
-  // });
-  //
+
+  view.on('stream', function (evt) {
+    evt.original.preventDefault();
+    var url = evt.node.href;
+    currentPlayer
+      .addToPlaylist(url)
+      .then(currentPlayer.play);
+  });
+
   // view.on('next', function (evt) { evt.context.currentPlayer.nextTrack(); });
   // view.on('previous', function (evt) { evt.context.currentPlayer.previousTrack(); });
   //
@@ -130,11 +132,22 @@ function buildUiWithPlayer(player) {
       );
 
   function buildServicesList(json) {
-    view.set('streams', json.services);
+    var promises = [];
+    json.services.forEach(function (s) {
+      promises.push( bbc.radio.extractStreamForUrl(s.playlist) );
+    });
+    Promise.all(promises)
+      .then(function (urls) {
+        var services = json.services.map(function (service, index) {
+          service.playlist = urls[index];
+          return service;
+        });
+        view.set('streams', services);
+      });
   }
 
-  fetchAndUpdateInitialState(player, view);
   addPlayerStateChangeListeners(player, view);
+  fetchAndUpdateInitialState(player, view);
 }
 
 function fetchAndUpdateInitialState(player, view) {
@@ -166,29 +179,28 @@ function fetchAndUpdateInitialState(player, view) {
 }
 
 function addPlayerStateChangeListeners(player, view) {
-  /*
-    Listen for general player state changes
-  */
-  player.on('player', function (info) {
-    console.log('info', info);
-
-    if (info.state) {
-      // playerSpec.state = info.state;
-      view.set('state.playback', info.state);
-    }
-
-    if (info.song) {
-      // playerSpec.current = info.song;
-      view.set('state.current', info.song);
-    }
-
-    if (info.nextsong) {
-      // playerSpec.next = info.nextsong;
-      view.set('state.next', info.nextsong);
-    }
-
-    // view.update();
-  });
+  console.log('adding listeners to player: ', player);
+  player.on('player', function () {console.log('player'); });
+  // player.on('player', function (info) {
+  //   console.log('info', info);
+  //
+  //   if (info.state) {
+  //     // playerSpec.state = info.state;
+  //     view.set('state.playback', info.state);
+  //   }
+  //
+  //   if (info.song) {
+  //     // playerSpec.current = info.song;
+  //     view.set('state.current', info.song);
+  //   }
+  //
+  //   if (info.nextsong) {
+  //     // playerSpec.next = info.nextsong;
+  //     view.set('state.next', info.nextsong);
+  //   }
+  //
+  //   // view.update();
+  // });
 }
 
 function createAndAttachPlayer(playerSpec) {
