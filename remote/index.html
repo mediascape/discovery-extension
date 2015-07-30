@@ -17,6 +17,7 @@
   <h1>MediaScape Client Examples ({{ state.name }})</h1>
   <div class="pure-g-r">
     <div class="pure-u-1-2">
+      {{#players.length > 0}}
       <div class="pure">
         <select id="player-select" value="{{ currentPlayer }}">
           {{#players}}
@@ -24,6 +25,7 @@
           {{/players}}
         </select>
       </div>
+      {{/players}}
       <div class="controls panel pure-g-r">
         <div class="group playback pure-u-1-2">
           <button id="previous" on-click="previous" class="no-button control">
