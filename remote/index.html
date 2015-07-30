@@ -28,20 +28,20 @@
       {{/players}}
       <div class="controls panel pure-g-r">
         <div class="group playback pure-u-1-2">
-          <button id="previous" on-click="previous" class="no-button control">
+          <button disabled={{ !isSupported('previousTrack') }} id="previous" on-click="previous" class="no-button control">
             <i class="fa fa-backward"></i>
           </button>
-          <button id="play-pause" on-click="play-pause" data-state="{{ state.playback == 'play' ? 'playing' : 'paused' }}" class="play-pause no-button control">
+          <button disabled={{ !isSupported('play') }} id="play-pause" on-click="play-pause" data-state="{{ state.playback == 'play' ? 'playing' : 'paused' }}" class="play-pause no-button control">
             <i class="fa fa-play transition-opacity"></i>
             <i class="fa fa-pause transition-opacity"></i>
           </button>
-          <button id="next" on-click="next" class="no-button control">
+          <button disabled={{ !isSupported('nextTrack') }} id="next" on-click="next" class="no-button control">
             <i class="fa fa-forward"></i>
           </button>
         </div>
         <label class="group volume control pure-u-1-2">
           <i class="fa fa-volume-up"></i>
-          <input id="volume" class="volume" type="range" value="{{ state.volume }}" min="0" max="100" />
+          <input disabled={{ !isSupported('setVolume') }} id="volume" class="volume" type="range" value="{{ state.volume }}" min="0" max="100" />
           <span class="current-volume"></span>
         </label>
       </div>
@@ -94,6 +94,9 @@
     <div class="panel collapse search">
       <h2><i class="fa fa-search"></i> Search library</h2>
       <div>
+        {{^search}}
+        Search is not supported on this device.
+        {{/search}}
         {{#search}}
         <input type="search" placeholder="File name, track, artists" value="{{ term }}"/>
         <button class="no-button" on-click="search"><i class="fa fa-search"></i> Search</button>

@@ -12,6 +12,10 @@ window.PlayerStore = (function () {
     if ( !players[name] ) {
       players[name] = adaptors[type].create(service);
       players[name].name = service.host;
+
+      players[name].isSupported = function (capability) {
+        return (capability in players[name]) ? true : false;
+      };
       console.log('Created new player %o of type %o', name, type);
     }
 

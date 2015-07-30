@@ -33,9 +33,9 @@ function buildUiWithPlayer(player) {
 
   currentPlayer = player;
 
-  view = createView();
+  view = createView(player);
 
-  attachViewEventListeners(view);
+  attachViewEventListeners(player, view);
 
   // Set the name of the current device
   view.set('state.name', player.name);
@@ -78,16 +78,19 @@ function fetchLiveStreams() {
       );
 }
 
-function attachViewEventListeners (view) {
-  view.observe('search.term', function (newValue) {
-    console.log('search.term', newValue);
-    currentPlayer
-      .search(newValue)
-      .then(function (results) {
-        console.log('search.results', results);
-        view.set('search.results', results);
-      });
-  });
+function attachViewEventListeners (player, view) {
+  if ( view.get('search') ) {
+    view.observe('search.term', function (newValue) {
+      console.log('search.term', newValue);
+      currentPlayer
+        .search(newValue)
+        .then(function (results) {
+          console.log('search.results', results);
+          view.set('search.results', results);
+        });
+    });
+  }
+
 
   // Triggered when a radio stream is picked from the list
   view.on('stream', function (evt) {
@@ -151,18 +154,19 @@ function attachViewEventListeners (view) {
   });
 }
 
-function createView() {
+function createView(player) {
+  // We set the initial UI state based on the capabilities of the player
   var view = new Ractive({
     el: '#view',
     template: '#view-template',
     data: {
+      isSupported: function (prop) {
+        return player.isSupported(prop);
+      },
       players: [],
       state: {},
       streams: [],
-      search: {
-        term: '',
-        results: []
-      },
+      search: player.isSupported('search') ? { term: '', results: [] } : null,
       volume: null
     },
     debug: true

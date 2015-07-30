@@ -27,6 +27,11 @@ body {
   color: rgb(0, 100, 255);
 }
 
+.no-button[disabled],
+.no-button[disabled]:hover {
+  color: #999;
+}
+
 .panel {
   margin: 1em 2em;
   padding: 1em;
