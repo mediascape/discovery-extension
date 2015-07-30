@@ -88,10 +88,15 @@ function attachViewEventListeners (view) {
   //   }
   // });
   //
-  // view.observe('search.term', function (newValue) {
-  //   console.log('search.term', newValue);
-  //   search(newValue);
-  // });
+  view.observe('search.term', function (newValue) {
+    console.log('search.term', newValue);
+    currentPlayer
+      .search(newValue)
+      .then(function (results) {
+        console.log('search.results', results);
+        view.set('search.results', results);
+      });
+  });
 
   // Triggered when a radio stream is picked from the list
   view.on('stream', function (evt) {
@@ -153,10 +158,6 @@ function attachViewEventListeners (view) {
       currentPlayer.play();
     }
   });
-
-  // document.addEventListener('searchresults', function (evt) {
-  //   view.set('search.results', evt.results);
-  // });
 }
 
 function createView() {

@@ -44,6 +44,17 @@ window.radiodanPlayer = (function () {
         },
         on: function (name, callback) {
           return player.on(name, callback);
+        },
+        search: function search(term) {
+          var promise;
+          if (term.length > 0) {
+            // Ask the player to search for anything
+            // matching the term in artist name, titles etc.
+            promise = player.search({ any: term }).then(function (s) { return s.response; });
+          } else {
+            promise = Promise.resolve([]);
+          }
+          return promise;
         }
       }
     }
