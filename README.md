@@ -3,6 +3,8 @@ MediaScape Discovery extensions
 
 This Chrome Extension listens for MediaScape radio services on the local network (found by the Discovery Helper Chrome App) and allows them to be controlled.
 
+For full example installation see [discovery-audio-stream-controller](https://github.com/mediascape/discovery-audio-stream-controller/blob/master/INSTALL.md).
+
 Remote control
 ---
 Clicking on the ![](shared/icon.png) icon in the browser toolbar will bring up a list of remote controllable devices on the local network. Selecting a device from the list will open a new tab containing a remote control interface for that device. From here you can play, pause and search music stored on the device.
