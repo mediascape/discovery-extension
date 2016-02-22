@@ -7,7 +7,7 @@ For detailed installation of all components see [discovery-audio-stream-controll
 
 Remote control
 ---
-Clicking on the ![](shared/icon.png) icon in the browser toolbar will bring up a list of remote controllable devices on the local network. Selecting a device from the list will open a new tab containing a remote control interface for that device. From here you can play, pause and search music stored on the device.
+Clicking on the ![](shared/icon.png =250x) icon in the browser toolbar will bring up a list of remote controllable devices on the local network. Selecting a device from the list will open a new tab containing a remote control interface for that device. From here you can play, pause and search music stored on the device.
 
 Content script
 ---
